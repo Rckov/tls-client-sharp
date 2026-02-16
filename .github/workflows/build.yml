@@ -1,0 +1,44 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  PROJECT_PATH: src/Http.TLS.csproj
+  TEST_PATH: tests/Http.TLS.Test.csproj
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: |
+          5.0.x
+          6.0.x
+          8.0.x
+          9.0.x
+          10.0.x
+          
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.PROJECT_PATH }}
+      
+    - name: Build
+      run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
+      
+    - name: Restore test dependencies
+      run: dotnet restore ${{ env.TEST_PATH }}
+      
+    - name: Build tests
+      run: dotnet build ${{ env.TEST_PATH }} --configuration Release --no-restore
+      
+    - name: Run tests
+      run: dotnet test ${{ env.TEST_PATH }} --configuration Release --no-build --verbosity normal

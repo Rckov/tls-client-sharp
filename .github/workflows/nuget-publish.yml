@@ -1,0 +1,74 @@
+name: Publish NuGet Package
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Package version (e.g. 1.0.0)'
+        required: true
+        default: '1.0.0'
+
+env:
+  PROJECT_PATH: src/Http.TLS.csproj
+  PACKAGE_OUTPUT_DIRECTORY: ${{ github.workspace }}/nupkgs
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: |
+          5.0.x
+          6.0.x
+          8.0.x
+          9.0.x
+          10.0.x
+
+    - name: Determine version
+      id: versioning
+      run: |
+        if [ "${{ github.event_name }}" == "release" ]; then
+          VERSION="${GITHUB_REF#refs/tags/v}"
+        else
+          VERSION="${{ github.event.inputs.version }}"
+        fi
+        echo "Using version: $VERSION"
+        echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+    - name: Restore dependencies
+      run: dotnet restore "${{ env.PROJECT_PATH }}"
+
+    - name: Build
+      run: dotnet build "${{ env.PROJECT_PATH }}" --configuration Release --no-restore
+
+    - name: Create package output directory
+      run: mkdir -p "${{ env.PACKAGE_OUTPUT_DIRECTORY }}"
+
+    - name: Pack NuGet package
+      run: |
+        dotnet pack "${{ env.PROJECT_PATH }}" \
+          --configuration Release \
+          --no-build \
+          --output "${{ env.PACKAGE_OUTPUT_DIRECTORY }}" \
+          -- -p:PackageVersion=${{ steps.versioning.outputs.VERSION }}
+
+    - name: Push to NuGet.org
+      run: |
+        dotnet nuget push "${{ env.PACKAGE_OUTPUT_DIRECTORY }}"/*.nupkg \
+          --api-key "${{ secrets.NUGET_API_KEY }}" \
+          --source https://api.nuget.org/v3/index.json \
+          --skip-duplicate
+
+    - name: Upload package artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: nuget-package
+        path: "${{ env.PACKAGE_OUTPUT_DIRECTORY }}/*.nupkg"

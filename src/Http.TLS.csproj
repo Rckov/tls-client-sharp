@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;net5.0;net6.0;net8.0;net9.0;net10.0</TargetFrameworks>
+		<LangVersion>Latest</LangVersion>
+		<Nullable>enable</Nullable>
+		<Platforms>x64;AnyCPU</Platforms>
+		<Version>1.2.2</Version>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<Authors>Rckov</Authors>
+		<Company>Rckov</Company>
+		<Product>Http.TLS</Product>
+		<PackageId>Http.TLS</PackageId>
+		<Title>Http.TLS</Title>
+		<Description>.NET wrapper for bogdanfinn/tls-client: HTTP/2 and HTTP/3 client with configurable TLS fingerprints.</Description>
+		<PackageTags>http2;http3;tls;fingerprinting;browser;client;proxy;cookies;tls-client</PackageTags>
+		<RepositoryUrl>https://github.com/Rckov/tls-client-sharp</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/Rckov/tls-client-sharp</PackageProjectUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageIcon>icon.png</PackageIcon>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+		<PackageReference Include="System.Text.Json" Version="10.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\images\icon.png" Pack="true" PackagePath="" Visible="false" />
+		<None Include="..\README.md" Pack="true" PackagePath="" Visible="false" />
+		<None Include="..\LICENSE" Pack="true" PackagePath="" Visible="false" />
+
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>$(MSBuildProjectName).Test</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
+</Project>
