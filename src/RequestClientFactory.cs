@@ -2,25 +2,24 @@ using Http.TLS.Builders;
 using Http.TLS.Utilities;
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace Http.TLS;
 
 public class RequestClientFactory(Action<RequestClientOptions>? defaultConfigure = null) : IRequestClientFactory
 {
-	private readonly Dictionary<string, Action<RequestClientOptions>> _named = new(StringComparer.Ordinal);
+	private readonly ConcurrentDictionary<string, Action<RequestClientOptions>> _named = new(StringComparer.Ordinal);
 
-	/// <summary>
-	/// Registers a named configuration.
-	/// </summary>
-	public RequestClientFactory Register(string name, Action<RequestClientOptions> configure)
+	/// <inheritdoc />
+	public IRequestClientFactory Register(string name, Action<RequestClientOptions> configure)
 	{
 		_named[name.ThrowIfNullOrEmpty()] = configure.ThrowIfNull();
 		return this;
 	}
 
 	/// <inheritdoc />
-	public IRequestClient CreateClient() => Build(defaultConfigure);
+	public IRequestClient CreateClient() => Build(null);
 
 	/// <inheritdoc />
 	public IRequestClient CreateClient(string name)
@@ -36,9 +35,10 @@ public class RequestClientFactory(Action<RequestClientOptions>? defaultConfigure
 	/// <inheritdoc />
 	public IRequestClient CreateClient(Action<RequestClientOptions> configure) => Build(configure);
 
-	private static IRequestClient Build(Action<RequestClientOptions>? configure)
+	private IRequestClient Build(Action<RequestClientOptions>? configure)
 	{
 		var builder = new RequestClientBuilder();
+		defaultConfigure?.Invoke(builder.Options);
 		configure?.Invoke(builder.Options);
 		return builder.Build();
 	}

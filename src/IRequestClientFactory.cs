@@ -5,6 +5,11 @@ namespace Http.TLS;
 public interface IRequestClientFactory
 {
 	/// <summary>
+	/// Registers a named configuration.
+	/// </summary>
+	IRequestClientFactory Register(string name, Action<RequestClientOptions> configure);
+
+	/// <summary>
 	/// Creates a client using the default configuration.
 	/// </summary>
 	IRequestClient CreateClient();
