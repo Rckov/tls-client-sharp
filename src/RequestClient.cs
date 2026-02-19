@@ -15,7 +15,14 @@ public sealed class RequestClient(RequestClientOptions? options) : IRequestClien
 {
 	/// <inheritdoc />
 	public RequestClientOptions Options
-		=> options.Pipe(o => o.Validate(), nameof(options));
+	{
+		get
+		{
+			options.ThrowIfNull();
+			options!.Validate();
+			return options;
+		}
+	}
 
 	/// <inheritdoc />
 	public Guid SessionId => Options.SessionId;
@@ -33,8 +40,8 @@ public sealed class RequestClient(RequestClientOptions? options) : IRequestClien
 	/// <inheritdoc />
 	public Response? Send(Request? request)
 	{
-		request.ThrowIfNull(nameof(request));
-		request!.RequestUrl.ThrowIfNullOrEmpty(nameof(request.RequestUrl));
+		request.ThrowIfNull();
+		request!.RequestUrl.ThrowIfNullOrEmpty();
 
 		Response? response = null;
 		var prepared = PrepareRequest(request);
@@ -61,7 +68,7 @@ public sealed class RequestClient(RequestClientOptions? options) : IRequestClien
 	/// <inheritdoc />
 	public CookiesResponse? GetCookies(string uri)
 	{
-		uri.ThrowIfNullOrEmpty(nameof(uri));
+		uri.ThrowIfNullOrEmpty();
 
 		var payload = new GetCookiesRequest
 		{
@@ -76,8 +83,8 @@ public sealed class RequestClient(RequestClientOptions? options) : IRequestClien
 	/// <inheritdoc />
 	public CookiesResponse? AddCookies(string uri, List<ClientCookie> cookies)
 	{
-		uri.ThrowIfNullOrEmpty(nameof(uri));
-		cookies.ThrowIfNull(nameof(cookies));
+		uri.ThrowIfNullOrEmpty();
+		cookies.ThrowIfNull();
 
 		var payload = new AddCookiesRequest
 		{

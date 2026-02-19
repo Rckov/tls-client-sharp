@@ -33,7 +33,7 @@ public static class Serializer
 
 	public static T? Deserialize<T>(string? json) where T : class
 	{
-		json.ThrowIfNullOrEmpty(nameof(json));
+		json.ThrowIfNullOrEmpty();
 		return JsonSerializer.Deserialize<T>(json!, Options);
 	}
 }

@@ -31,7 +31,7 @@ public static class BrowserTypeExtensions
 	/// </summary>
 	public static BrowserType Parse(string? value)
 	{
-		value.ThrowIfNullOrEmpty(nameof(value));
+		value.ThrowIfNullOrEmpty();
 
 		if (Mapping.Value.TryGetValue(value!, out var result))
 		{

@@ -14,11 +14,16 @@ public class RequestClientBuilder
 	private readonly RequestClientOptions _options = new();
 
 	/// <summary>
+	/// Direct access to the underlying options for factory scenarios.
+	/// </summary>
+	public RequestClientOptions Options => _options;
+
+	/// <summary>
 	/// Sets request timeout.
 	/// </summary>
 	public RequestClientBuilder WithTimeout(TimeSpan timeout)
 	{
-		_options.Timeout = timeout.ThrowIfInvalidTimeout(nameof(timeout));
+		_options.Timeout = timeout.ThrowIfInvalidTimeout();
 		return this;
 	}
 
@@ -27,7 +32,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithCustomRequestClient(CustomRequestClient? client)
 	{
-		_options.CustomRequestClient = client.ThrowIfNull(nameof(client));
+		_options.CustomRequestClient = client.ThrowIfNull();
 		return this;
 	}
 
@@ -45,7 +50,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithTransportOptions(TransportOptions? options)
 	{
-		_options.TransportOptions = options.ThrowIfNull(nameof(options));
+		_options.TransportOptions = options.ThrowIfNull();
 		return this;
 	}
 
@@ -54,7 +59,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithDefaultHeaders(Dictionary<string, List<string>> headers)
 	{
-		_options.DefaultHeaders = headers.ThrowIfNull(nameof(headers));
+		_options.DefaultHeaders = headers.ThrowIfNull();
 		return this;
 	}
 
@@ -63,7 +68,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithHeaderOrder(List<string> names)
 	{
-		_options.HeaderOrder = names.ThrowIfNull(nameof(names));
+		_options.HeaderOrder = names.ThrowIfNull();
 		return this;
 	}
 
@@ -81,7 +86,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithProxy(string url, bool rotating = false)
 	{
-		_options.ProxyUrl = url.ThrowIfNullOrEmpty(nameof(url));
+		_options.ProxyUrl = url.ThrowIfNullOrEmpty();
 		_options.IsRotatingProxy = rotating;
 		return this;
 	}
@@ -91,7 +96,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithLocalAddress(string address)
 	{
-		_options.LocalAddress = address.ThrowIfInvalidIpAddress(nameof(address));
+		_options.LocalAddress = address.ThrowIfInvalidIpAddress();
 		return this;
 	}
 
@@ -163,8 +168,8 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithCertificatePinning(string host, List<string> fingerprints)
 	{
-		host.ThrowIfNullOrEmpty(nameof(host));
-		fingerprints.ThrowIfNull(nameof(fingerprints)).ThrowIfEmpty(nameof(fingerprints));
+		host.ThrowIfNullOrEmpty();
+		fingerprints.ThrowIfNull().ThrowIfEmpty();
 
 		_options.CertificatePinningHosts[host] = fingerprints;
 		return this;

@@ -18,7 +18,7 @@ public class RequestBuilder
 	/// </summary>
 	public RequestBuilder WithUrl(string url)
 	{
-		_request.RequestUrl = url.IsUri();
+		_request.RequestUrl = url.ThrowIfNotUri();
 		return this;
 	}
 
@@ -36,7 +36,7 @@ public class RequestBuilder
 	/// </summary>
 	public RequestBuilder WithTimeout(TimeSpan timeout)
 	{
-		_request.TimeoutMilliseconds = (int)timeout.ThrowIfInvalidTimeout(nameof(timeout)).TotalMilliseconds;
+		_request.TimeoutMilliseconds = (int)timeout.ThrowIfInvalidTimeout().TotalMilliseconds;
 		return this;
 	}
 
@@ -45,7 +45,7 @@ public class RequestBuilder
 	/// </summary>
 	public RequestBuilder WithHeader(string name, string value)
 	{
-		_request.Headers[name.ThrowIfNullOrEmpty(nameof(name))] = value;
+		_request.Headers[name.ThrowIfNullOrEmpty()] = value;
 		return this;
 	}
 
@@ -54,7 +54,7 @@ public class RequestBuilder
 	/// </summary>
 	public RequestBuilder WithHeaders(Dictionary<string, string> values)
 	{
-		foreach (var kvp in values.ThrowIfNull(nameof(values)))
+		foreach (var kvp in values.ThrowIfNull())
 		{
 			WithHeader(kvp.Key, kvp.Value);
 		}
@@ -67,7 +67,7 @@ public class RequestBuilder
 	/// </summary>
 	public RequestBuilder WithHeaderOrder(List<string> names)
 	{
-		_request.HeaderOrder = names.ThrowIfNull(nameof(names));
+		_request.HeaderOrder = names.ThrowIfNull();
 		return this;
 	}
 
@@ -76,7 +76,7 @@ public class RequestBuilder
 	/// </summary>
 	public RequestBuilder WithConnectHeaders(Dictionary<string, List<string>> values)
 	{
-		foreach (var kvp in values.ThrowIfNull(nameof(values)))
+		foreach (var kvp in values.ThrowIfNull())
 		{
 			_request.ConnectHeaders[kvp.Key.ThrowIfNullOrEmpty()] = kvp.Value;
 		}
@@ -141,7 +141,7 @@ public class RequestBuilder
 	/// </summary>
 	public RequestBuilder WithCookies(List<ClientCookie> values)
 	{
-		_request.RequestCookies.AddRange(values.ThrowIfNull(nameof(values)));
+		_request.RequestCookies.AddRange(values.ThrowIfNull());
 		return this;
 	}
 
@@ -168,7 +168,7 @@ public class RequestBuilder
 	/// </summary>
 	public RequestBuilder WithProxy(string url, bool rotating = false)
 	{
-		_request.ProxyUrl = url.ThrowIfNullOrEmpty(nameof(url));
+		_request.ProxyUrl = url.ThrowIfNullOrEmpty();
 		_request.IsRotatingProxy = rotating;
 		return this;
 	}
@@ -187,7 +187,7 @@ public class RequestBuilder
 	/// </summary>
 	public RequestBuilder WithServerName(string serverName)
 	{
-		_request.ServerNameOverwrite = serverName.ThrowIfInvalidHostname(nameof(serverName));
+		_request.ServerNameOverwrite = serverName.ThrowIfInvalidHostname();
 		return this;
 	}
 
@@ -196,7 +196,7 @@ public class RequestBuilder
 	/// </summary>
 	public RequestBuilder WithHostOverride(string hostOverride)
 	{
-		_request.RequestHostOverride = hostOverride.ThrowIfInvalidHostname(nameof(hostOverride));
+		_request.RequestHostOverride = hostOverride.ThrowIfInvalidHostname();
 		return this;
 	}
 
@@ -214,8 +214,8 @@ public class RequestBuilder
 	/// </summary>
 	public RequestBuilder WithCertificatePinning(string hostname, List<string> fingerprints)
 	{
-		hostname.ThrowIfNullOrEmpty(nameof(hostname));
-		fingerprints.ThrowIfNull(nameof(fingerprints)).ThrowIfEmpty(nameof(fingerprints));
+		hostname.ThrowIfNullOrEmpty();
+		fingerprints.ThrowIfNull().ThrowIfEmpty();
 
 		_request.CertificatePinningHosts[hostname] = fingerprints;
 		return this;
@@ -235,7 +235,7 @@ public class RequestBuilder
 	/// </summary>
 	public RequestBuilder WithLocalAddress(string address)
 	{
-		_request.LocalAddress = address.ThrowIfInvalidIpAddress(nameof(address));
+		_request.LocalAddress = address.ThrowIfInvalidIpAddress();
 		return this;
 	}
 
