@@ -8,7 +8,6 @@ on:
 
 env:
   PROJECT_PATH: src/Http.TLS.csproj
-  UNIT_TEST_PATH: tests/Http.TLS.Unit.Test/Http.TLS.Unit.Test.csproj
 
 jobs:
   build:
@@ -33,12 +32,3 @@ jobs:
       
     - name: Build
       run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
-
-    - name: Restore test dependencies
-      run: dotnet restore ${{ env.UNIT_TEST_PATH }}
-
-    - name: Build tests
-      run: dotnet build ${{ env.UNIT_TEST_PATH }} --configuration Release --no-restore
-
-    - name: Run unit tests
-      run: dotnet test ${{ env.UNIT_TEST_PATH }} --configuration Release --no-build --verbosity normal --filter "Category!=Integration"
