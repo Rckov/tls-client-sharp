@@ -8,10 +8,38 @@ on:
 
 env:
   PROJECT_PATH: src/Http.TLS.csproj
+  UNIT_TEST_PATH: tests/Http.TLS.Unit.Test/Http.TLS.Unit.Test.csproj
 
 jobs:
+  test:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: |
+          5.0.x
+          6.0.x
+          8.0.x
+          9.0.x
+          10.0.x
+
+    - name: Restore test dependencies
+      run: dotnet restore ${{ env.UNIT_TEST_PATH }}
+
+    - name: Build tests
+      run: dotnet build ${{ env.UNIT_TEST_PATH }} --configuration Release --no-restore
+
+    - name: Run unit tests
+      run: dotnet test ${{ env.UNIT_TEST_PATH }} --configuration Release --no-build --verbosity normal --filter "Category!=Integration"
+
   release:
     runs-on: windows-latest
+    needs: test
     
     steps:
     - name: Checkout repository
@@ -46,22 +74,11 @@ jobs:
     - name: Copy build artifacts
       shell: pwsh
       run: |
-        # Copy .NET Standard 2.0
         Copy-Item "src/bin/Release/netstandard2.0/*" "release/netstandard2.0/" -Recurse -Force
-        
-        # Copy .NET 5.0
         Copy-Item "src/bin/Release/net5.0/*" "release/net5.0/" -Recurse -Force
-        
-        # Copy .NET 6.0
         Copy-Item "src/bin/Release/net6.0/*" "release/net6.0/" -Recurse -Force
-        
-        # Copy .NET 8.0
         Copy-Item "src/bin/Release/net8.0/*" "release/net8.0/" -Recurse -Force
-        
-        # Copy .NET 9.0
         Copy-Item "src/bin/Release/net9.0/*" "release/net9.0/" -Recurse -Force
-
-        # Copy .NET 10.0
         Copy-Item "src/bin/Release/net10.0/*" "release/net10.0/" -Recurse -Force
         
     - name: Create zip archives
@@ -73,8 +90,6 @@ jobs:
         Compress-Archive -Path "release/net8.0/*" -DestinationPath "Http.TLS-net8.0.zip"
         Compress-Archive -Path "release/net9.0/*" -DestinationPath "Http.TLS-net9.0.zip"
         Compress-Archive -Path "release/net10.0/*" -DestinationPath "Http.TLS-net10.0.zip"
-        
-        # Create combined archive with all frameworks
         Compress-Archive -Path "release/*" -DestinationPath "Http.TLS-all-frameworks.zip"
         
     - name: Get version from tag
