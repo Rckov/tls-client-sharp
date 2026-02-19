@@ -1,52 +1,32 @@
-using Http.TLS.Builders;
-using Http.TLS.Core;
-using Http.TLS.Core.Request;
 using Http.TLS.Core.Response;
 using Http.TLS.Examples.Abstractions;
+using Http.TLS.Extensions;
 
 using System;
-using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Http.TLS.Examples.Examples;
 
-public sealed class PostJsonExample : IExample
+public sealed class PostJsonExample(IRequestClientFactory factory) : IExample
 {
-	public void Run()
+	public async Task RunAsync()
 	{
-		using var client = CreateClient();
-		var request = CreatePostRequest();
-		var response = client.Send(request);
+		using var client = factory.CreateClient();
 
-		PrintResponse(response);
-	}
-
-	private static IRequestClient CreateClient()
-	{
-		return new RequestClientBuilder()
-			.WithBrowserType(BrowserType.Chrome133)
-			.WithTimeout(TimeSpan.FromSeconds(30))
-			.Build();
-	}
-
-	private static Request CreatePostRequest()
-	{
-		var data = new
+		var payload = new
 		{
-			name = "John Doe",
-			email = "john@example.com",
+			name = "[name]",
+			email = "[email]",
 			age = 30
 		};
 
-		return new RequestBuilder()
-			.WithUrl("https://httpbin.org/post")
-			.WithMethod(HttpMethod.Post)
-			.WithBody(data)
-			.Build();
+		var response = await client.PostJsonAsync("https://httpbin.org/post", payload);
+		PrintResponse(response);
 	}
 
 	private static void PrintResponse(Response? response)
 	{
-		if (response == null)
+		if (response is null)
 		{
 			return;
 		}

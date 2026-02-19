@@ -1,6 +1,8 @@
+using System.Threading.Tasks;
+
 namespace Http.TLS.Examples.Abstractions;
 
 public interface IExample
 {
-	void Run();
+	Task RunAsync();
 }

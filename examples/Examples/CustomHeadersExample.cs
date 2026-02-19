@@ -1,53 +1,34 @@
 using Http.TLS.Builders;
-using Http.TLS.Core;
-using Http.TLS.Core.Request;
 using Http.TLS.Core.Response;
 using Http.TLS.Examples.Abstractions;
 
 using System;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Http.TLS.Examples.Examples;
 
-public sealed class CustomHeadersExample : IExample
+public sealed class CustomHeadersExample(IRequestClientFactory factory) : IExample
 {
-	public void Run()
+	public async Task RunAsync()
 	{
-		using var client = CreateClient();
-		var request = CreateRequestWithHeaders();
-		var response = client.Send(request);
+		using var client = factory.CreateClient(o => o.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
 
-		PrintResponse(response);
-	}
-
-	private static IRequestClient CreateClient()
-	{
-		return new RequestClientBuilder()
-			.WithBrowserType(BrowserType.Chrome133)
-			.WithUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
-			.WithTimeout(TimeSpan.FromSeconds(30))
-			.Build();
-	}
-
-	private static Request CreateRequestWithHeaders()
-	{
-		return new RequestBuilder()
+		var request = new RequestBuilder()
 			.WithUrl("https://httpbin.org/headers")
 			.WithMethod(HttpMethod.Get)
 			.WithHeader("X-Custom-Header", "CustomValue")
 			.WithHeader("X-API-Key", "secret-key")
-			.WithHeaderOrder(
-			[
-				"X-Custom-Header",
-				"X-API-Key",
-				"User-Agent"
-			])
+			.WithHeaderOrder(["X-Custom-Header", "X-API-Key", "User-Agent"])
 			.Build();
+
+		var response = await client.SendAsync(request);
+		PrintResponse(response);
 	}
 
 	private static void PrintResponse(Response? response)
 	{
-		if (response == null)
+		if (response is null)
 		{
 			return;
 		}

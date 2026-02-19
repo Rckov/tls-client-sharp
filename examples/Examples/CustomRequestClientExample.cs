@@ -1,16 +1,16 @@
 using Http.TLS.Builders;
 using Http.TLS.Core;
-using Http.TLS.Core.Request;
 using Http.TLS.Core.Response;
 using Http.TLS.Examples.Abstractions;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Http.TLS.Examples.Examples;
 
-public sealed class CustomRequestClientExample : IExample
+public sealed class CustomRequestClientExample(IRequestClientFactory factory) : IExample
 {
 	private static readonly int[] GreaseValues =
 	[
@@ -18,60 +18,35 @@ public sealed class CustomRequestClientExample : IExample
 		0x8A8A, 0x9A9A, 0xAAAA, 0xBABA, 0xCACA, 0xDADA, 0xEAEA, 0xFAFA
 	];
 
-	public void Run()
+	public async Task RunAsync()
 	{
-		using var client = CreateClient();
-		var request = CreateRequest();
-		var response = client.Send(request);
+		using var client = factory.CreateClient("custom-tls");
 
-		PrintResponse(response);
-	}
-
-	private static IRequestClient CreateClient()
-	{
-		var grease = GetRandomGrease();
-		var ja3String = BuildJa3Fingerprint(grease);
-		var customClient = BuildCustomProfile(ja3String);
-
-		return new RequestClientBuilder()
-			.WithCustomRequestClient(customClient)
-			.WithTimeout(TimeSpan.FromSeconds(30))
+		var request = new RequestBuilder()
+			.WithUrl("https://tls.peet.ws/api/all")
 			.Build();
-	}
 
-	private static Request CreateRequest()
-	{
-		return new Request
-		{
-			RequestUrl = "https://tls.peet.ws/api/all",
-			RequestMethod = "GET",
-			DefaultHeaders = new Dictionary<string, List<string>>
-			{
-				["User-Agent"] = ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36"],
-				["Accept"] = ["text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7"],
-				["Accept-Language"] = ["en-US,en;q=0.9"],
-				["Accept-Encoding"] = ["gzip, deflate, br"],
-				["Sec-Ch-Ua"] = ["\"Chromium\";v=\"144\", \"Google Chrome\";v=\"144\", \"Not-A.Brand\";v=\"99\""],
-				["Sec-Ch-Ua-Mobile"] = ["?0"],
-				["Sec-Ch-Ua-Platform"] = ["\"Windows\""],
-				["Sec-Fetch-Dest"] = ["document"],
-				["Sec-Fetch-Mode"] = ["navigate"],
-				["Sec-Fetch-Site"] = ["none"],
-				["Sec-Fetch-User"] = ["?1"],
-				["Upgrade-Insecure-Requests"] = ["1"]
-			}
-		};
+		var response = await client.SendAsync(request);
+		PrintResponse(response);
 	}
 
 	private static void PrintResponse(Response? response)
 	{
-		if (response == null)
+		if (response is null)
 		{
 			return;
 		}
 
 		Console.WriteLine($"Status: {response.Status}");
 		Console.WriteLine($"Body: {response.Body}");
+	}
+
+	public static CustomRequestClient BuildProfile()
+	{
+		var grease = GreaseValues[Random.Shared.Next(GreaseValues.Length)];
+		var ja3 = BuildJa3Fingerprint(grease);
+
+		return BuildCustomProfile(ja3);
 	}
 
 	private static string BuildJa3Fingerprint(int grease)
@@ -222,11 +197,5 @@ public sealed class CustomRequestClientExample : IExample
 		var pointFormats = string.Join("-", ellipticCurvePointFormats);
 
 		return $"{sslVersion},{ciphers},{exts},{curves},{pointFormats}";
-	}
-
-	private static int GetRandomGrease()
-	{
-		var random = new Random();
-		return GreaseValues[random.Next(GreaseValues.Length)];
 	}
 }
