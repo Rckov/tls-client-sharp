@@ -1,4 +1,5 @@
 using Http.TLS.Builders;
+using Http.TLS.Utilities;
 
 using System;
 using System.Collections.Generic;
@@ -14,12 +15,7 @@ public class RequestClientFactory(Action<RequestClientOptions>? defaultConfigure
 	/// </summary>
 	public RequestClientFactory Register(string name, Action<RequestClientOptions> configure)
 	{
-		if (string.IsNullOrEmpty(name))
-		{
-			throw new ArgumentException("Name cannot be null or empty.", nameof(name));
-		}
-
-		_named[name] = configure ?? throw new ArgumentNullException(nameof(configure));
+		_named[name.ThrowIfNullOrEmpty()] = configure.ThrowIfNull();
 		return this;
 	}
 

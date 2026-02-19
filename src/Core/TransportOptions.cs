@@ -65,4 +65,20 @@ public class TransportOptions
 	/// </summary>
 	[JsonPropertyName("disableCompression")]
 	public bool DisableCompression { get; set; }
+
+	/// <summary>
+	/// Creates a copy.
+	/// </summary>
+	public TransportOptions Clone() => new()
+	{
+		IdleConnTimeout = IdleConnTimeout,
+		MaxIdleConns = MaxIdleConns,
+		MaxIdleConnsPerHost = MaxIdleConnsPerHost,
+		MaxConnsPerHost = MaxConnsPerHost,
+		MaxResponseHeaderBytes = MaxResponseHeaderBytes,
+		WriteBufferSize = WriteBufferSize,
+		ReadBufferSize = ReadBufferSize,
+		DisableKeepAlives = DisableKeepAlives,
+		DisableCompression = DisableCompression,
+	};
 }

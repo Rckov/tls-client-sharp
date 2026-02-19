@@ -157,18 +157,18 @@ public sealed class RequestClientOptions
 
 		if (!string.IsNullOrWhiteSpace(ProxyUrl))
 		{
-			ProxyUrl.IsUri();
+			ProxyUrl.ThrowIfNotUri();
 		}
 
 		if (!string.IsNullOrEmpty(LocalAddress))
 		{
-			LocalAddress.ThrowIfInvalidIpAddress(nameof(LocalAddress));
+			LocalAddress.ThrowIfInvalidIpAddress();
 		}
 
 		foreach (var host in CertificatePinningHosts)
 		{
-			host.Key.ThrowIfInvalidHostname(nameof(CertificatePinningHosts));
-			host.Value.ThrowIfEmpty(nameof(CertificatePinningHosts));
+			host.Key.ThrowIfInvalidHostname();
+			host.Value.ThrowIfEmpty();
 		}
 
 		if (WithCustomCookieJar && WithoutCookieJar)
@@ -206,8 +206,8 @@ public sealed class RequestClientOptions
 			WithoutCookieJar = WithoutCookieJar,
 			WithDebug = WithDebug,
 			CatchPanics = CatchPanics,
-			CustomRequestClient = CustomRequestClient,
-			TransportOptions = TransportOptions,
+			CustomRequestClient = CustomRequestClient?.Clone(),
+			TransportOptions = TransportOptions?.Clone(),
 		};
 
 		foreach (var header in DefaultHeaders)
