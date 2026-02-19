@@ -19,39 +19,27 @@ Download the appropriate native library for your platform from the [bogdanfinn/t
 **Initialization:**
 
 ```csharp
-// Initialize once at application startup
-RequestClient.Initialize("path/to/native-library");
+// Initialize once at application startup, dispose on shutdown
+using var context = new NativeClientContext("path/to/native-library");
 ```
 
 ## Quick Start
 
 ```csharp
-using Http.TLS;
-using Http.TLS.Builders;
-using Http.TLS.Core;
-using Http.TLS.Core.Request;
+using var context = new NativeClientContext("tls-client-windows-64-1.14.0.dll");
 
-// Initialize library
-RequestClient.Initialize("path/to/native-library");
-
-// Create client
 using var client = new RequestClientBuilder()
     .WithBrowserType(BrowserType.Chrome133)
     .WithTimeout(TimeSpan.FromSeconds(30))
     .Build();
 
-// Send request
-var request = new Request
-{
-    RequestUrl = "https://httpbin.org/post",
-    RequestMethod = "POST",
-    RequestBody = "{\"message\": \"Hello\"}",
-    Headers = { ["Content-Type"] = "application/json" }
-};
+var request = new RequestBuilder()
+    .WithUrl("https://httpbin.org/get")
+    .Build();
 
-var response = client.Send(request);
-Console.WriteLine($"Status: {response.Status}");
-Console.WriteLine($"Body: {response.Body}");
+var response = await client.SendAsync(request);
+Console.WriteLine($"Status: {response?.Status}");
+Console.WriteLine($"Body: {response?.Body}");
 ```
 
 ## RequestClientBuilder
@@ -75,6 +63,19 @@ using var client = new RequestClientBuilder()
 - `WithCookieJar()` / `WithoutCookieJar()` - cookie management
 - `WithInsecureSkipVerify()` - skip SSL verification
 - ...
+
+## RequestClientFactory
+
+Factory for managing multiple named client configurations:
+
+```csharp
+var factory = new RequestClientFactory(o => o.BrowserType = BrowserType.Chrome133);
+factory.Register("mobile", o => o.BrowserType = BrowserType.SafariIos17_2);
+
+using var defaultClient = factory.CreateClient();
+using var mobileClient = factory.CreateClient("mobile");
+using var customClient = factory.CreateClient(o => o.WithProxy("http://proxy:8080"));
+```
 
 ## RequestBuilder
 
@@ -100,7 +101,7 @@ var request = new RequestBuilder()
 
 ## Features
 
-- **HTTP/1.1, HTTP/2, HTTP/3** - MFull protocol support with automatic negotiation
+- **HTTP/1.1, HTTP/2, HTTP/3** - Full protocol support with automatic negotiation
 - **Protocol Racing** - Chrome-like "Happy Eyeballs" for HTTP/2 vs HTTP/3
 - **TLS Fingerprinting** - Mimic Chrome, Firefox, Safari, and other browsers
 - **HTTP/3 Fingerprinting** - Accurate QUIC/HTTP/3 fingerprints matching real browsers
@@ -115,14 +116,11 @@ var request = new RequestBuilder()
 ### GET Request
 
 ```csharp
-var request = new Request
-{
-    RequestUrl = "https://httpbin.org/headers",
-    RequestMethod = "GET",
-    Headers = { ["X-Custom"] = "value" }
-};
+var request = new RequestBuilder()
+    .WithUrl("https://httpbin.org/get")
+    .Build();
 
-var response = client.Send(request);
+var response = await client.SendAsync(request);
 ```
 
 ### POST with JSON
@@ -134,13 +132,13 @@ var request = new RequestBuilder()
     .WithBody(new { name = "John", age = 30 })
     .Build();
 
-var response = client.Send(request);
+var response = await client.SendAsync(request);
 ```
 
 ## Target Frameworks
 
 - .NET Standard 2.0
-- .NET 5.0, 6.0, 8.0, 9.0 10.0
+- .NET 5.0, 6.0, 8.0, 9.0, 10.0
 
 ## License
 
