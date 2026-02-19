@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="examples/Http.TLS.Examples.csproj" />
   <Project Path="src/Http.TLS.csproj" />
-  <Project Path="tests/Http.TLS.Test.csproj" />
+  <Project Path="tests/Http.TLS.Unit.Test/Http.TLS.Unit.Test.csproj" />
+  <Project Path="tests/Http.TLS.Integration.Test/Http.TLS.Integration.Test.csproj" />
 </Solution>
