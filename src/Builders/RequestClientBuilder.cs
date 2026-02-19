@@ -11,19 +11,17 @@ namespace Http.TLS.Builders;
 /// </summary>
 public class RequestClientBuilder
 {
-	private readonly RequestClientOptions _options = new();
-
 	/// <summary>
 	/// Direct access to the underlying options for factory scenarios.
 	/// </summary>
-	public RequestClientOptions Options => _options;
+	public RequestClientOptions Options { get; } = new();
 
 	/// <summary>
 	/// Sets request timeout.
 	/// </summary>
 	public RequestClientBuilder WithTimeout(TimeSpan timeout)
 	{
-		_options.Timeout = timeout.ThrowIfInvalidTimeout();
+		Options.Timeout = timeout.ThrowIfInvalidTimeout();
 		return this;
 	}
 
@@ -32,7 +30,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithCustomRequestClient(CustomRequestClient? client)
 	{
-		_options.CustomRequestClient = client.ThrowIfNull();
+		Options.CustomRequestClient = client.ThrowIfNull();
 		return this;
 	}
 
@@ -41,7 +39,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithBrowserType(BrowserType type)
 	{
-		_options.BrowserType = type;
+		Options.BrowserType = type;
 		return this;
 	}
 
@@ -50,7 +48,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithTransportOptions(TransportOptions? options)
 	{
-		_options.TransportOptions = options.ThrowIfNull();
+		Options.TransportOptions = options.ThrowIfNull();
 		return this;
 	}
 
@@ -59,7 +57,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithDefaultHeaders(Dictionary<string, List<string>> headers)
 	{
-		_options.DefaultHeaders = headers.ThrowIfNull();
+		Options.DefaultHeaders = headers.ThrowIfNull();
 		return this;
 	}
 
@@ -68,7 +66,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithHeaderOrder(List<string> names)
 	{
-		_options.HeaderOrder = names.ThrowIfNull();
+		Options.HeaderOrder = names.ThrowIfNull();
 		return this;
 	}
 
@@ -77,7 +75,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithUserAgent(string? agent)
 	{
-		_options.UserAgent = agent;
+		Options.UserAgent = agent;
 		return this;
 	}
 
@@ -86,8 +84,8 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithProxy(string url, bool rotating = false)
 	{
-		_options.ProxyUrl = url.ThrowIfNullOrEmpty();
-		_options.IsRotatingProxy = rotating;
+		Options.ProxyUrl = url.ThrowIfNullOrEmpty();
+		Options.IsRotatingProxy = rotating;
 		return this;
 	}
 
@@ -96,7 +94,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithLocalAddress(string address)
 	{
-		_options.LocalAddress = address.ThrowIfInvalidIpAddress();
+		Options.LocalAddress = address.ThrowIfInvalidIpAddress();
 		return this;
 	}
 
@@ -105,7 +103,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithDisableHttp3(bool disable = true)
 	{
-		_options.DisableHttp3 = disable;
+		Options.DisableHttp3 = disable;
 		return this;
 	}
 
@@ -114,7 +112,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithDisableIPv4(bool disable = true)
 	{
-		_options.DisableIPv4 = disable;
+		Options.DisableIPv4 = disable;
 		return this;
 	}
 
@@ -123,7 +121,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithDisableIPv6(bool disable = true)
 	{
-		_options.DisableIPv6 = disable;
+		Options.DisableIPv6 = disable;
 		return this;
 	}
 
@@ -132,7 +130,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithProtocolRacing(bool enable = true)
 	{
-		_options.WithProtocolRacing = enable;
+		Options.WithProtocolRacing = enable;
 		return this;
 	}
 
@@ -141,7 +139,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithForceHttp1(bool force = true)
 	{
-		_options.ForceHttp1 = force;
+		Options.ForceHttp1 = force;
 		return this;
 	}
 
@@ -150,7 +148,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithInsecureSkipVerify(bool skip = true)
 	{
-		_options.InsecureSkipVerify = skip;
+		Options.InsecureSkipVerify = skip;
 		return this;
 	}
 
@@ -159,7 +157,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithRandomTlsExtensions(bool enable = true)
 	{
-		_options.WithRandomTlsExtensionOrder = enable;
+		Options.WithRandomTlsExtensionOrder = enable;
 		return this;
 	}
 
@@ -171,7 +169,7 @@ public class RequestClientBuilder
 		host.ThrowIfNullOrEmpty();
 		fingerprints.ThrowIfNull().ThrowIfEmpty();
 
-		_options.CertificatePinningHosts[host] = fingerprints;
+		Options.CertificatePinningHosts[host] = fingerprints;
 		return this;
 	}
 
@@ -180,7 +178,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithCookieJar(bool enable = true)
 	{
-		_options.WithCustomCookieJar = enable;
+		Options.WithCustomCookieJar = enable;
 		return this;
 	}
 
@@ -189,7 +187,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithoutCookieJar(bool disable = true)
 	{
-		_options.WithoutCookieJar = disable;
+		Options.WithoutCookieJar = disable;
 		return this;
 	}
 
@@ -198,7 +196,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithDebug(bool enable = true)
 	{
-		_options.WithDebug = enable;
+		Options.WithDebug = enable;
 		return this;
 	}
 
@@ -207,7 +205,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithCatchPanics(bool enable = true)
 	{
-		_options.CatchPanics = enable;
+		Options.CatchPanics = enable;
 		return this;
 	}
 
@@ -216,7 +214,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder With(Action<RequestClientOptions> config)
 	{
-		config?.Invoke(_options);
+		config?.Invoke(Options);
 		return this;
 	}
 
@@ -225,7 +223,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClient Build()
 	{
-		_options.Validate();
-		return new RequestClient(_options.Clone());
+		Options.Validate();
+		return new RequestClient(Options.Clone());
 	}
 }

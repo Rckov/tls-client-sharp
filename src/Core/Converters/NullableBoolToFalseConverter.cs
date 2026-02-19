@@ -31,7 +31,6 @@ public class NullableBoolToFalseConverter : JsonConverter<bool?>
 
 	public override void Write(Utf8JsonWriter writer, bool? value, JsonSerializerOptions options)
 	{
-		// Serialize null as false for the native library
 		writer.WriteBooleanValue(value ?? false);
 	}
 }

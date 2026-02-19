@@ -206,8 +206,8 @@ public sealed class RequestClientOptions
 			WithoutCookieJar = WithoutCookieJar,
 			WithDebug = WithDebug,
 			CatchPanics = CatchPanics,
-			CustomRequestClient = CustomRequestClient,
-			TransportOptions = TransportOptions,
+			CustomRequestClient = CustomRequestClient?.Clone(),
+			TransportOptions = TransportOptions?.Clone(),
 		};
 
 		foreach (var header in DefaultHeaders)

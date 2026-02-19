@@ -14,15 +14,7 @@ namespace Http.TLS;
 public sealed class RequestClient(RequestClientOptions? options) : IRequestClient
 {
 	/// <inheritdoc />
-	public RequestClientOptions Options
-	{
-		get
-		{
-			options.ThrowIfNull();
-			options!.Validate();
-			return options;
-		}
-	}
+	public RequestClientOptions Options => options.ThrowIfNull();
 
 	/// <inheritdoc />
 	public Guid SessionId => Options.SessionId;
@@ -108,14 +100,14 @@ public sealed class RequestClient(RequestClientOptions? options) : IRequestClien
 	/// <inheritdoc />
 	public void Dispose()
 	{
-		if (!NativeWrapper.IsInitialized)
+		if (!NativeWrapper.IsInitialized || options is null)
 		{
 			return;
 		}
 
 		try
 		{
-			var payload = new { sessionId = Options.SessionId };
+			var payload = new { sessionId = options.SessionId };
 			NativeWrapper.DestroySession(Serializer.SerializeToBytes(payload));
 		}
 		catch (InvalidOperationException)

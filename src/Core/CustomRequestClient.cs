@@ -155,4 +155,35 @@ public class CustomRequestClient
 	/// </summary>
 	[JsonPropertyName("allowHttp")]
 	public bool AllowHttp { get; set; }
+
+	/// <summary>
+	/// Creates a shallow copy with independent collection instances.
+	/// </summary>
+	public CustomRequestClient Clone() => new()
+	{
+		Http2Settings = new Dictionary<string, uint>(Http2Settings),
+		Http2SettingsOrder = [.. Http2SettingsOrder],
+		Http3Settings = new Dictionary<string, ulong>(Http3Settings),
+		Http3SettingsOrder = [.. Http3SettingsOrder],
+		Http3PseudoHeaderOrder = [.. Http3PseudoHeaderOrder],
+		HeaderPriority = HeaderPriority,
+		CertificateCompressionAlgorithms = [.. CertificateCompressionAlgorithms],
+		Ja3Fingerprint = Ja3Fingerprint,
+		KeyShareCurves = [.. KeyShareCurves],
+		AlpnProtocols = [.. AlpnProtocols],
+		AlpsProtocols = [.. AlpsProtocols],
+		EchCandidatePayloads = [.. EchCandidatePayloads],
+		EchCandidateCipherSuites = [.. EchCandidateCipherSuites],
+		PriorityFrames = [.. PriorityFrames],
+		PseudoHeaderOrder = [.. PseudoHeaderOrder],
+		SupportedDelegatedCredentialsAlgorithms = [.. SupportedDelegatedCredentialsAlgorithms],
+		SupportedSignatureAlgorithms = [.. SupportedSignatureAlgorithms],
+		SupportedVersions = [.. SupportedVersions],
+		ConnectionFlow = ConnectionFlow,
+		RecordSizeLimit = RecordSizeLimit,
+		StreamId = StreamId,
+		Http3PriorityParam = Http3PriorityParam,
+		Http3SendGreaseFrames = Http3SendGreaseFrames,
+		AllowHttp = AllowHttp,
+	};
 }

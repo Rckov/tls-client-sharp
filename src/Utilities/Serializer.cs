@@ -21,7 +21,7 @@ public static class Serializer
 
 	public static string Serialize<T>(T? data) where T : class
 	{
-		data.ThrowIfNull(nameof(data));
+		data.ThrowIfNull();
 		return JsonSerializer.Serialize(data, Options);
 	}
 
