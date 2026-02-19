@@ -14,6 +14,11 @@ public class RequestClientBuilder
 	private readonly RequestClientOptions _options = new();
 
 	/// <summary>
+	/// Direct access to the underlying options for factory scenarios.
+	/// </summary>
+	public RequestClientOptions Options => _options;
+
+	/// <summary>
 	/// Sets request timeout.
 	/// </summary>
 	public RequestClientBuilder WithTimeout(TimeSpan timeout)

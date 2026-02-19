@@ -1,5 +1,6 @@
 using Http.TLS.Examples.Abstractions;
 using Http.TLS.Examples.Examples;
+using Http.TLS.Native;
 
 using System;
 
@@ -9,7 +10,7 @@ public static class Program
 {
 	private static void Main()
 	{
-		RequestClient.Initialize("tls-client-windows-64-1.14.0.dll");
+		using var context = new NativeClientContext("tls-client-windows-64-1.14.0.dll");
 
 		var examples = new IExample[]
 		{
@@ -26,6 +27,6 @@ public static class Program
 			examples[i].Run();
 		}
 
-		RequestClient.Cleanup();
+		// context?.Dispose();
 	}
 }
