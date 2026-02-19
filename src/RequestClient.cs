@@ -20,16 +20,6 @@ public sealed class RequestClient(RequestClientOptions? options) : IRequestClien
 	/// <inheritdoc />
 	public Guid SessionId => Options.SessionId;
 
-	public static void Initialize(string? path)
-	{
-		NativeWrapper.Initialize(path);
-	}
-
-	public static void Cleanup()
-	{
-		NativeWrapper.Cleanup();
-	}
-
 	/// <inheritdoc />
 	public Response? Send(Request? request)
 	{
