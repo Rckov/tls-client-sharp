@@ -14,7 +14,10 @@ public static class Serializer
 	{
 #if NET8_0_OR_GREATER
 		var options = new JsonSerializerOptions(SerializerContext.Default.Options);
-		options.TypeInfoResolverChain.Add(new System.Text.Json.Serialization.Metadata.DefaultJsonTypeInfoResolver());
+		foreach (var context in Native.NativeClientContext.RegisteredContexts)
+		{
+			options.TypeInfoResolverChain.Add(context);
+		}
 #else
 		var options = new JsonSerializerOptions
 		{
