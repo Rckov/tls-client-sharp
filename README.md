@@ -118,6 +118,7 @@ var request = new RequestBuilder()
 ```csharp
 var request = new RequestBuilder()
     .WithUrl("https://httpbin.org/get")
+    .WithMethod(HttpMethod.Get)
     .Build();
 
 var response = await client.SendAsync(request);
