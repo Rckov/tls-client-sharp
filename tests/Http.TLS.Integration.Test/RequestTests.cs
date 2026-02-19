@@ -32,7 +32,7 @@ public class RequestTests(NativeLibraryFixture nativeLibraryFixture) : IClassFix
 			.WithUrl("https://httpbin.org/get")
 			.Build();
 
-		var response = await client.SendAsync(request);
+		var response = await client.SendAsync(request, TestContext.Current.CancellationToken);
 
 		response.Should().NotBeNull();
 		response!.IsSuccessStatus.Should().BeTrue();
@@ -49,7 +49,7 @@ public class RequestTests(NativeLibraryFixture nativeLibraryFixture) : IClassFix
 			.WithBody(new { key = "sentinel_value" })
 			.Build();
 
-		var response = await client.SendAsync(request);
+		var response = await client.SendAsync(request, TestContext.Current.CancellationToken);
 
 		response.Should().NotBeNull();
 		response!.IsSuccessStatus.Should().BeTrue();
