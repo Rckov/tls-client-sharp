@@ -6,6 +6,8 @@ using Http.TLS.Utilities;
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Http.TLS;
 
@@ -89,68 +91,46 @@ public sealed class RequestClient(RequestClientOptions? options) : IRequestClien
 	}
 
 	/// <inheritdoc />
+	public Task<Response?> SendAsync(Request? request, CancellationToken cancellationToken = default)
+	{
+		return Task.Run(() => Send(request), cancellationToken);
+	}
+
+	/// <inheritdoc />
+	public Task<CookiesResponse?> GetCookiesAsync(string uri, CancellationToken cancellationToken = default)
+	{
+		return Task.Run(() => GetCookies(uri), cancellationToken);
+	}
+
+	/// <inheritdoc />
+	public Task<CookiesResponse?> AddCookiesAsync(string uri, List<ClientCookie> cookies, CancellationToken cancellationToken = default)
+	{
+		return Task.Run(() => AddCookies(uri, cookies), cancellationToken);
+	}
+
+	/// <inheritdoc />
 	public void Dispose()
 	{
+		if (!NativeWrapper.IsInitialized)
+		{
+			return;
+		}
+
 		try
 		{
 			var payload = new { sessionId = Options.SessionId };
 			NativeWrapper.DestroySession(Serializer.SerializeToBytes(payload));
 		}
-		catch
+		catch (InvalidOperationException)
 		{
 		}
 	}
 
 	private Request PrepareRequest(Request request)
 	{
-		var prepared = CopyRequest(request);
+		var prepared = request.Clone();
 		ApplyClientDefaults(prepared);
 		return prepared;
-	}
-
-	private Request CopyRequest(Request request)
-	{
-		return new Request
-		{
-			RequestUrl = request.RequestUrl,
-			RequestMethod = request.RequestMethod,
-			SessionId = request.SessionId,
-			Headers = new Dictionary<string, string>(request.Headers),
-			DefaultHeaders = new Dictionary<string, List<string>>(request.DefaultHeaders),
-			ConnectHeaders = new Dictionary<string, List<string>>(request.ConnectHeaders),
-			HeaderOrder = [.. request.HeaderOrder],
-			RequestBody = request.RequestBody,
-			IsByteRequest = request.IsByteRequest,
-			RequestCookies = [.. request.RequestCookies],
-			WithCustomCookieJar = request.WithCustomCookieJar,
-			WithoutCookieJar = request.WithoutCookieJar,
-			ProxyUrl = request.ProxyUrl,
-			IsRotatingProxy = request.IsRotatingProxy,
-			BrowserType = request.BrowserType,
-			ServerNameOverwrite = request.ServerNameOverwrite,
-			RequestHostOverride = request.RequestHostOverride,
-			InsecureSkipVerify = request.InsecureSkipVerify,
-			WithRandomTlsExtensionOrder = request.WithRandomTlsExtensionOrder,
-			CertificatePinningHosts = new Dictionary<string, List<string>>(request.CertificatePinningHosts),
-			LocalAddress = request.LocalAddress,
-			DisableIPv4 = request.DisableIPv4,
-			DisableIPv6 = request.DisableIPv6,
-			ForceHttp1 = request.ForceHttp1,
-			DisableHttp3 = request.DisableHttp3,
-			WithProtocolRacing = request.WithProtocolRacing,
-			TimeoutMilliseconds = request.TimeoutMilliseconds,
-			TimeoutSeconds = request.TimeoutSeconds,
-			IsByteResponse = request.IsByteResponse,
-			EuckrResponse = request.EuckrResponse,
-			FollowRedirects = request.FollowRedirects,
-			StreamOutputPath = request.StreamOutputPath,
-			StreamOutputBlockSize = request.StreamOutputBlockSize,
-			StreamOutputEofSymbol = request.StreamOutputEofSymbol,
-			WithDebug = request.WithDebug,
-			CatchPanics = request.CatchPanics,
-			CustomRequestClient = request.CustomRequestClient,
-			TransportOptions = request.TransportOptions
-		};
 	}
 
 	private void ApplyClientDefaults(Request request)

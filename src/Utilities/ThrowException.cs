@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 
 namespace Http.TLS.Utilities;
 
@@ -59,6 +60,32 @@ internal static class ThrowException
 			return File.Exists(value)
 				? value!
 				: throw new FileNotFoundException($"File not found at path: '{value}'", value);
+		}
+
+		public string ThrowIfInvalidHostname(string? paramName = null)
+		{
+			value.ThrowIfNullOrEmpty(paramName);
+			return Uri.CheckHostName(value) != UriHostNameType.Unknown
+				? value!
+				: throw new ArgumentException($"Invalid hostname: '{value}'.", paramName);
+		}
+
+		public string ThrowIfInvalidIpAddress(string? paramName = null)
+		{
+			value.ThrowIfNullOrEmpty(paramName);
+			return IPAddress.TryParse(value, out _)
+				? value!
+				: throw new ArgumentException("Value must be a valid IP address.", paramName);
+		}
+	}
+
+	extension(TimeSpan value)
+	{
+		public TimeSpan ThrowIfInvalidTimeout(string? paramName = null)
+		{
+			return value > TimeSpan.Zero && value <= TimeSpan.FromMinutes(30)
+				? value
+				: throw new ArgumentException("Timeout must be between 1ms and 30 minutes.", paramName);
 		}
 	}
 }

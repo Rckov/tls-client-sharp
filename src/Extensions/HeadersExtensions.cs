@@ -21,13 +21,18 @@ public static class HeadersExtensions
 		/// <summary>
 		/// Gets header value or null.
 		/// </summary>
-		public string? GetHeader(string name) =>
-			headers.TryGetValue(name, out var value) ? value : null;
+		public string? GetHeader(string name)
+		{
+			return headers.TryGetValue(name, out var value) ? value : null;
+		}
 
 		/// <summary>
 		/// Checks header existence.
 		/// </summary>
-		public bool HasHeader(string name) => headers.ContainsKey(name);
+		public bool HasHeader(string name)
+		{
+			return headers.ContainsKey(name);
+		}
 
 		/// <summary>
 		/// Removes header.
@@ -67,25 +72,33 @@ public static class HeadersExtensions
 		/// <summary>
 		/// Gets first header value or null.
 		/// </summary>
-		public string? GetHeader(string name) =>
-			headers.TryGetValue(name, out var values) && values.Count > 0 ? values[0] : null;
+		public string? GetHeader(string name)
+		{
+			return headers.TryGetValue(name, out var values) && values.Count > 0 ? values[0] : null;
+		}
 
 		/// <summary>
 		/// Gets all header values or empty list.
 		/// </summary>
-		public List<string> GetHeaderValues(string name) =>
-			headers.TryGetValue(name, out var values) ? values : [];
+		public List<string> GetHeaderValues(string name)
+		{
+			return headers.TryGetValue(name, out var values) ? values : [];
+		}
 
 		/// <summary>
 		/// Checks header existence and non-empty values.
 		/// </summary>
-		public bool HasHeader(string name) =>
-			headers.TryGetValue(name, out var values) && values.Count > 0;
+		public bool HasHeader(string name)
+		{
+			return headers.TryGetValue(name, out var values) && values.Count > 0;
+		}
 
 		/// <summary>
 		/// Converts to raw HTTP headers.
 		/// </summary>
-		public string ToRawHeaders() =>
-			string.Join("\r\n", headers.SelectMany(kvp => kvp.Value.Select(v => $"{kvp.Key}: {v}")));
+		public string ToRawHeaders()
+		{
+			return string.Join("\r\n", headers.SelectMany(kvp => kvp.Value.Select(v => $"{kvp.Key}: {v}")));
+		}
 	}
 }

@@ -4,6 +4,8 @@ using Http.TLS.Core.Response;
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Http.TLS;
 
@@ -22,22 +24,30 @@ public interface IRequestClient : IDisposable
 	/// <summary>
 	/// Executes the specified HTTP request.
 	/// </summary>
-	/// <param name="request">The request to execute.</param>
-	/// <returns>The <see cref="Response"/>; otherwise, <see langword="null"/>.</returns>
 	Response? Send(Request? request);
+
+	/// <summary>
+	/// Executes the specified HTTP request asynchronously.
+	/// </summary>
+	Task<Response?> SendAsync(Request? request, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Retrieves cookies associated with the specified URI.
 	/// </summary>
-	/// <param name="uri">The URI to retrieve cookies for.</param>
-	/// <returns>The <see cref="CookiesResponse"/>; otherwise, <see langword="null"/>.</returns>
 	CookiesResponse? GetCookies(string uri);
+
+	/// <summary>
+	/// Retrieves cookies associated with the specified URI asynchronously.
+	/// </summary>
+	Task<CookiesResponse?> GetCookiesAsync(string uri, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Associates cookies with the specified URI.
 	/// </summary>
-	/// <param name="uri">The URI to associate cookies with.</param>
-	/// <param name="cookies">The cookies to associate.</param>
-	/// <returns>The updated <see cref="CookiesResponse"/>; otherwise, <see langword="null"/>.</returns>
 	CookiesResponse? AddCookies(string uri, List<ClientCookie> cookies);
+
+	/// <summary>
+	/// Associates cookies with the specified URI asynchronously.
+	/// </summary>
+	Task<CookiesResponse?> AddCookiesAsync(string uri, List<ClientCookie> cookies, CancellationToken cancellationToken = default);
 }

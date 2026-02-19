@@ -32,13 +32,6 @@ internal class BrowserTypeConverter : JsonConverter<BrowserType>
 	/// </summary>
 	public override void Write(Utf8JsonWriter writer, BrowserType value, JsonSerializerOptions options)
 	{
-		if (value != default)
-		{
-			writer.WriteStringValue(value.ToDescription());
-		}
-		else
-		{
-			writer.WriteNullValue();
-		}
+		writer.WriteStringValue(value.ToDescription());
 	}
 }

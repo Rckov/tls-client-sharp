@@ -3,7 +3,6 @@ using Http.TLS.Utilities;
 
 using System;
 using System.Collections.Generic;
-using System.Net;
 
 namespace Http.TLS;
 
@@ -18,9 +17,9 @@ public sealed class RequestClientOptions
 	public Guid SessionId { get; set; } = Guid.NewGuid();
 
 	/// <summary>
-	/// Request timeout.
+	/// Request timeout. Defaults to 30 seconds.
 	/// </summary>
-	public TimeSpan Timeout { get; set; }
+	public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(30);
 
 	/// <summary>
 	/// Default headers.
@@ -161,18 +160,14 @@ public sealed class RequestClientOptions
 			ProxyUrl.IsUri();
 		}
 
-		if (!string.IsNullOrEmpty(LocalAddress) && !IPAddress.TryParse(LocalAddress, out _))
+		if (!string.IsNullOrEmpty(LocalAddress))
 		{
-			throw new ArgumentException("Local address must be a valid IP address.", nameof(LocalAddress));
+			LocalAddress.ThrowIfInvalidIpAddress(nameof(LocalAddress));
 		}
 
 		foreach (var host in CertificatePinningHosts)
 		{
-			if (Uri.CheckHostName(host.Key) == UriHostNameType.Unknown)
-			{
-				throw new ArgumentException($"Invalid certificate pinning host: '{host.Key}'.", nameof(CertificatePinningHosts));
-			}
-
+			host.Key.ThrowIfInvalidHostname(nameof(CertificatePinningHosts));
 			host.Value.ThrowIfEmpty(nameof(CertificatePinningHosts));
 		}
 

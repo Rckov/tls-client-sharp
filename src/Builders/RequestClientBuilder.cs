@@ -3,7 +3,6 @@ using Http.TLS.Utilities;
 
 using System;
 using System.Collections.Generic;
-using System.Net;
 
 namespace Http.TLS.Builders;
 
@@ -19,12 +18,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithTimeout(TimeSpan timeout)
 	{
-		if (timeout <= TimeSpan.Zero || timeout > TimeSpan.FromMinutes(30))
-		{
-			throw new ArgumentException("Timeout must be between 1ms and 30 minutes.", nameof(timeout));
-		}
-
-		_options.Timeout = timeout;
+		_options.Timeout = timeout.ThrowIfInvalidTimeout(nameof(timeout));
 		return this;
 	}
 
@@ -97,12 +91,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithLocalAddress(string address)
 	{
-		if (!IPAddress.TryParse(address.ThrowIfNullOrEmpty(nameof(address)), out _))
-		{
-			throw new ArgumentException("Local address must be a valid IP address.", nameof(address));
-		}
-
-		_options.LocalAddress = address;
+		_options.LocalAddress = address.ThrowIfInvalidIpAddress(nameof(address));
 		return this;
 	}
 

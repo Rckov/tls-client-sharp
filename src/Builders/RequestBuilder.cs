@@ -4,7 +4,6 @@ using Http.TLS.Utilities;
 
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 
@@ -37,12 +36,7 @@ public class RequestBuilder
 	/// </summary>
 	public RequestBuilder WithTimeout(TimeSpan timeout)
 	{
-		if (timeout <= TimeSpan.Zero || timeout > TimeSpan.FromMinutes(30))
-		{
-			throw new ArgumentException("Timeout must be between 1ms and 30 minutes.", nameof(timeout));
-		}
-
-		_request.TimeoutMilliseconds = (int)timeout.TotalMilliseconds;
+		_request.TimeoutMilliseconds = (int)timeout.ThrowIfInvalidTimeout(nameof(timeout)).TotalMilliseconds;
 		return this;
 	}
 
@@ -193,14 +187,7 @@ public class RequestBuilder
 	/// </summary>
 	public RequestBuilder WithServerName(string serverName)
 	{
-		serverName.ThrowIfNullOrEmpty(nameof(serverName));
-
-		if (Uri.CheckHostName(serverName) == UriHostNameType.Unknown)
-		{
-			throw new ArgumentException($"Invalid SNI hostname: '{serverName}'.", nameof(serverName));
-		}
-
-		_request.ServerNameOverwrite = serverName;
+		_request.ServerNameOverwrite = serverName.ThrowIfInvalidHostname(nameof(serverName));
 		return this;
 	}
 
@@ -209,14 +196,7 @@ public class RequestBuilder
 	/// </summary>
 	public RequestBuilder WithHostOverride(string hostOverride)
 	{
-		hostOverride.ThrowIfNullOrEmpty(nameof(hostOverride));
-
-		if (Uri.CheckHostName(hostOverride) == UriHostNameType.Unknown)
-		{
-			throw new ArgumentException($"Invalid hostname: '{hostOverride}'.", nameof(hostOverride));
-		}
-
-		_request.RequestHostOverride = hostOverride;
+		_request.RequestHostOverride = hostOverride.ThrowIfInvalidHostname(nameof(hostOverride));
 		return this;
 	}
 
@@ -255,12 +235,7 @@ public class RequestBuilder
 	/// </summary>
 	public RequestBuilder WithLocalAddress(string address)
 	{
-		if (!IPAddress.TryParse(address.ThrowIfNullOrEmpty(nameof(address)), out _))
-		{
-			throw new ArgumentException("Local address must be a valid IP address.", nameof(address));
-		}
-
-		_request.LocalAddress = address;
+		_request.LocalAddress = address.ThrowIfInvalidIpAddress(nameof(address));
 		return this;
 	}
 
@@ -382,5 +357,8 @@ public class RequestBuilder
 	/// <summary>
 	/// Builds the request.
 	/// </summary>
-	public Request Build() => _request;
+	public Request Build()
+	{
+		return _request;
+	}
 }

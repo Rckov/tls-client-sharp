@@ -265,4 +265,52 @@ public class Request
 	[JsonPropertyName("transportOptions")]
 	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public TransportOptions? TransportOptions { get; set; }
+
+	/// <summary>
+	/// Creates a shallow copy with independent collection instances.
+	/// </summary>
+	public Request Clone()
+	{
+		return new()
+		{
+			RequestUrl = RequestUrl,
+			RequestMethod = RequestMethod,
+			SessionId = SessionId,
+			Headers = new Dictionary<string, string>(Headers),
+			DefaultHeaders = new Dictionary<string, List<string>>(DefaultHeaders),
+			ConnectHeaders = new Dictionary<string, List<string>>(ConnectHeaders),
+			HeaderOrder = [.. HeaderOrder],
+			RequestBody = RequestBody,
+			IsByteRequest = IsByteRequest,
+			RequestCookies = [.. RequestCookies],
+			WithCustomCookieJar = WithCustomCookieJar,
+			WithoutCookieJar = WithoutCookieJar,
+			ProxyUrl = ProxyUrl,
+			IsRotatingProxy = IsRotatingProxy,
+			BrowserType = BrowserType,
+			ServerNameOverwrite = ServerNameOverwrite,
+			RequestHostOverride = RequestHostOverride,
+			InsecureSkipVerify = InsecureSkipVerify,
+			WithRandomTlsExtensionOrder = WithRandomTlsExtensionOrder,
+			CertificatePinningHosts = new Dictionary<string, List<string>>(CertificatePinningHosts),
+			LocalAddress = LocalAddress,
+			DisableIPv4 = DisableIPv4,
+			DisableIPv6 = DisableIPv6,
+			ForceHttp1 = ForceHttp1,
+			DisableHttp3 = DisableHttp3,
+			WithProtocolRacing = WithProtocolRacing,
+			TimeoutMilliseconds = TimeoutMilliseconds,
+			TimeoutSeconds = TimeoutSeconds,
+			IsByteResponse = IsByteResponse,
+			EuckrResponse = EuckrResponse,
+			FollowRedirects = FollowRedirects,
+			StreamOutputPath = StreamOutputPath,
+			StreamOutputBlockSize = StreamOutputBlockSize,
+			StreamOutputEofSymbol = StreamOutputEofSymbol,
+			WithDebug = WithDebug,
+			CatchPanics = CatchPanics,
+			CustomRequestClient = CustomRequestClient,
+			TransportOptions = TransportOptions
+		};
+	}
 }

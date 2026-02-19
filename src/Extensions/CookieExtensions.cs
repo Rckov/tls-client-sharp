@@ -44,8 +44,10 @@ public static class CookieExtensions
 		/// <summary>
 		/// Converts cookies to Cookie header value.
 		/// </summary>
-		public string ToCookieHeaderValue() =>
-			string.Join("; ", cookies.Select(c => $"{c.Name}={c.Value}"));
+		public string ToCookieHeaderValue()
+		{
+			return string.Join("; ", cookies.Select(c => $"{c.Name}={c.Value}"));
+		}
 	}
 
 	extension((string Name, string Value) pair)
@@ -53,6 +55,9 @@ public static class CookieExtensions
 		/// <summary>
 		/// Creates cookie from tuple.
 		/// </summary>
-		public ClientCookie ToCookie() => new(pair.Name, pair.Value);
+		public ClientCookie ToCookie()
+		{
+			return new(pair.Name, pair.Value);
+		}
 	}
 }

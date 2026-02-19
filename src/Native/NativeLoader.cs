@@ -7,29 +7,38 @@ namespace Http.TLS.Native;
 
 internal static class NativeLoader
 {
-	public static IntPtr LoadLibrary(string? path) => PlatformSupport.Platform switch
+	public static IntPtr LoadLibrary(string? path)
 	{
-		Platform.Linux => Linux.LoadLibrary(path),
-		Platform.Windows => Windows.LoadLibrary(path),
-		Platform.Osx => MacOs.LoadLibrary(path),
-		_ => throw new PlatformNotSupportedException()
-	};
+		return PlatformSupport.Platform switch
+		{
+			Platform.Linux => Linux.LoadLibrary(path),
+			Platform.Windows => Windows.LoadLibrary(path),
+			Platform.Osx => MacOs.LoadLibrary(path),
+			_ => throw new PlatformNotSupportedException()
+		};
+	}
 
-	public static IntPtr GetProcAddress(IntPtr handle, string name) => PlatformSupport.Platform switch
+	public static IntPtr GetProcAddress(IntPtr handle, string name)
 	{
-		Platform.Linux => Linux.GetProcAddress(handle, name),
-		Platform.Windows => Windows.GetProcAddress(handle, name),
-		Platform.Osx => MacOs.GetProcAddress(handle, name),
-		_ => throw new PlatformNotSupportedException()
-	};
+		return PlatformSupport.Platform switch
+		{
+			Platform.Linux => Linux.GetProcAddress(handle, name),
+			Platform.Windows => Windows.GetProcAddress(handle, name),
+			Platform.Osx => MacOs.GetProcAddress(handle, name),
+			_ => throw new PlatformNotSupportedException()
+		};
+	}
 
-	public static bool FreeLibrary(IntPtr handle) => PlatformSupport.Platform switch
+	public static bool FreeLibrary(IntPtr handle)
 	{
-		Platform.Linux => Linux.FreeLibrary(handle) == 0,
-		Platform.Windows => Windows.FreeLibrary(handle),
-		Platform.Osx => MacOs.FreeLibrary(handle) == 0,
-		_ => throw new PlatformNotSupportedException()
-	};
+		return PlatformSupport.Platform switch
+		{
+			Platform.Linux => Linux.FreeLibrary(handle) == 0,
+			Platform.Windows => Windows.FreeLibrary(handle),
+			Platform.Osx => MacOs.FreeLibrary(handle) == 0,
+			_ => throw new PlatformNotSupportedException()
+		};
+	}
 
 	private static class Windows
 	{

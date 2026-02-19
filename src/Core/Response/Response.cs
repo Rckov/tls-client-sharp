@@ -53,17 +53,26 @@ public class Response
 	/// <summary>
 	/// First header value or null.
 	/// </summary>
-	public string? GetHeader(string name) => Headers.GetHeader(name);
+	public string? GetHeader(string name)
+	{
+		return Headers.GetHeader(name);
+	}
 
 	/// <summary>
 	/// All header values.
 	/// </summary>
-	public List<string> GetHeaderValues(string name) => Headers.GetHeaderValues(name);
+	public List<string> GetHeaderValues(string name)
+	{
+		return Headers.GetHeaderValues(name);
+	}
 
 	/// <summary>
 	/// Checks header existence.
 	/// </summary>
-	public bool HasHeader(string name) => Headers.HasHeader(name);
+	public bool HasHeader(string name)
+	{
+		return Headers.HasHeader(name);
+	}
 
 	/// <summary>
 	/// Cookies.
@@ -74,12 +83,18 @@ public class Response
 	/// <summary>
 	/// Cookie value or null.
 	/// </summary>
-	public string? GetCookie(string name) => Cookies.TryGetValue(name, out var value) ? value : null;
+	public string? GetCookie(string name)
+	{
+		return Cookies.TryGetValue(name, out var value) ? value : null;
+	}
 
 	/// <summary>
 	/// Checks cookie existence.
 	/// </summary>
-	public bool HasCookie(string name) => Cookies.ContainsKey(name);
+	public bool HasCookie(string name)
+	{
+		return Cookies.ContainsKey(name);
+	}
 
 	/// <summary>
 	/// Session identifier.
