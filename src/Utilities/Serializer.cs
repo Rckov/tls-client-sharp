@@ -8,16 +8,24 @@ namespace Http.TLS.Utilities;
 
 public static class Serializer
 {
-	private static readonly JsonSerializerOptions Options = new()
+	private static readonly JsonSerializerOptions Options = CreateOptions();
+
+	private static JsonSerializerOptions CreateOptions()
 	{
-		WriteIndented = false,
-		PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-		DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-		Converters =
+#if NET8_0_OR_GREATER
+		var options = new JsonSerializerOptions(SerializerContext.Default.Options);
+		options.TypeInfoResolverChain.Add(new System.Text.Json.Serialization.Metadata.DefaultJsonTypeInfoResolver());
+#else
+		var options = new JsonSerializerOptions
 		{
-			new BrowserTypeConverter()
-		}
-	};
+			WriteIndented = false,
+			PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+			DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+		};
+#endif
+		options.Converters.Add(new BrowserTypeConverter());
+		return options;
+	}
 
 	public static string Serialize<T>(T? data) where T : class
 	{

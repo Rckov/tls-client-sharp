@@ -30,5 +30,7 @@ public static class Program
 			Console.WriteLine($"{i + 1}. {examples[i].GetType().Name}");
 			await examples[i].RunAsync();
 		}
+
+		Console.ReadLine();
 	}
 }

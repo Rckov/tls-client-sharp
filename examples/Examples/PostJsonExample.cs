@@ -9,16 +9,13 @@ namespace Http.TLS.Examples.Examples;
 
 public sealed class PostJsonExample(IRequestClientFactory factory) : IExample
 {
+	private sealed record PostPayload(string Name, string Email, int Age);
+
 	public async Task RunAsync()
 	{
 		using var client = factory.CreateClient();
 
-		var payload = new
-		{
-			name = "[name]",
-			email = "[email]",
-			age = 30
-		};
+		var payload = new PostPayload("[name]", "[email]", 30);
 
 		var response = await client.PostJsonAsync("https://httpbin.org/post", payload);
 		PrintResponse(response);

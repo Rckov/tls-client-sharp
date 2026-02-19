@@ -1,37 +1,31 @@
-using Http.TLS.Extensions;
-
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Http.TLS.Core.Converters;
 
-/// <summary>
-/// JSON converter for <see cref="BrowserType" /> enum.
-/// </summary>
-internal class BrowserTypeConverter : JsonConverter<BrowserType>
+internal sealed class BrowserTypeConverter : JsonConverter<BrowserType?>
 {
-	/// <summary>
-	/// Reads <see cref="BrowserType" /> from JSON.
-	/// </summary>
-	public override BrowserType Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+	public override BrowserType? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
-		return reader.TokenType switch
+		if (reader.TokenType == JsonTokenType.Null)
 		{
-			JsonTokenType.Null => default,
-			JsonTokenType.String => string.IsNullOrEmpty(reader.GetString())
-				? default
-				: BrowserTypeExtensions.Parse(reader.GetString()),
+			return null;
+		}
 
-			_ => throw new JsonException($"Cannot convert {reader.TokenType} to BrowserType")
-		};
+		var value = reader.GetString();
+		return string.IsNullOrEmpty(value) ? null : new BrowserType(value!);
 	}
 
-	/// <summary>
-	/// Writes <see cref="BrowserType" /> to JSON.
-	/// </summary>
-	public override void Write(Utf8JsonWriter writer, BrowserType value, JsonSerializerOptions options)
+	public override void Write(Utf8JsonWriter writer, BrowserType? value, JsonSerializerOptions options)
 	{
-		writer.WriteStringValue(value.ToDescription());
+		if (value is null)
+		{
+			writer.WriteNullValue();
+		}
+		else
+		{
+			writer.WriteStringValue(value.Value);
+		}
 	}
 }

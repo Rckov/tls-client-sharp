@@ -107,7 +107,11 @@ public sealed class RequestClient(RequestClientOptions? options) : IRequestClien
 
 		try
 		{
-			var payload = new { sessionId = options.SessionId };
+			var payload = new DestroySessionRequest
+			{
+				SessionId = options.SessionId
+			};
+
 			NativeWrapper.DestroySession(Serializer.SerializeToBytes(payload));
 		}
 		catch (InvalidOperationException)
