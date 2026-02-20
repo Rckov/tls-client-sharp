@@ -39,6 +39,26 @@ public static class CookieExtensions
 		}
 	}
 
+	extension(System.Net.Cookie cookie)
+	{
+		/// <summary>
+		/// Converts System.Net.Cookie to ClientCookie.
+		/// </summary>
+		public ClientCookie ToClientCookie()
+		{
+			return new ClientCookie(cookie.Name, cookie.Value)
+			{
+				Domain = cookie.Domain,
+				Path = cookie.Path,
+				Secure = cookie.Secure,
+				HttpOnly = cookie.HttpOnly,
+				Expires = cookie.Expires != DateTime.MinValue
+					? new DateTimeOffset(cookie.Expires).ToUnixTimeSeconds()
+					: 0
+			};
+		}
+	}
+
 	extension(IEnumerable<ClientCookie> cookies)
 	{
 		/// <summary>

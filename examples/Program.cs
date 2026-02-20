@@ -1,5 +1,6 @@
 using Http.TLS.Examples.Abstractions;
 using Http.TLS.Examples.Examples;
+using Http.TLS.Examples.Issues;
 using Http.TLS.Native;
 
 using System;
@@ -19,19 +20,24 @@ public static class Program
 		var factory = new RequestClientFactory();
 		factory.Register("custom-tls", o => o.CustomRequestClient = CustomRequestClientExample.BuildProfile());
 
-		IExample[] examples =
+		//IExample[] examples =
+		//[
+		//	new BasicExample(factory),
+		//	new CookieExample(factory),
+		//	new CustomHeadersExample(factory),
+		//	new PostJsonExample(factory),
+		//	new CustomRequestClientExample(factory),
+		//];
+
+		IExample[] Issues =
 		[
-			new BasicExample(factory),
-			new CookieExample(factory),
-			new CustomHeadersExample(factory),
-			new PostJsonExample(factory),
-			new CustomRequestClientExample(factory),
+			new CookieIssueExample(factory),
 		];
 
-		for (var i = 0; i < examples.Length; i++)
+		for (var i = 0; i < Issues.Length; i++)
 		{
-			Console.WriteLine($"{i + 1}. {examples[i].GetType().Name}");
-			await examples[i].RunAsync();
+			Console.WriteLine($"{i + 1}. {Issues[i].GetType().Name}");
+			await Issues[i].RunAsync();
 		}
 
 		Console.ReadLine();
