@@ -1,9 +1,11 @@
 using Http.TLS.Builders;
+using Http.TLS.Core;
 using Http.TLS.Core.Response;
 using Http.TLS.Examples.Abstractions;
 using Http.TLS.Extensions;
 
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -26,6 +28,9 @@ public sealed class CookieIssueExample(IRequestClientFactory factory) : IExample
 
 		Console.WriteLine("JAR example:");
 		await JARExample(cookieContainer);
+
+		Console.WriteLine("Session example:");
+		await SessionExample(cookieContainer);
 	}
 
 	private async Task UserExample(CookieContainer cookies)
@@ -59,6 +64,33 @@ public sealed class CookieIssueExample(IRequestClientFactory factory) : IExample
 		}
 
 		var response = await client.SendAsync(requestBuilder.Build());
+		PrintResponse(response);
+	}
+
+	private async Task SessionExample(CookieContainer cookies)
+	{
+		using var client = factory.CreateClient(o => o.WithCustomCookieJar = true);
+
+		var requestBuilder = new RequestBuilder()
+			.WithUrl($"{URL}/cookies")
+			.WithMethod(HttpMethod.Get)
+			.Build();
+
+		var cookiesList = new List<ClientCookie>();
+		foreach (Cookie cookie in cookies.GetCookies(new Uri(URL)))
+		{
+			cookiesList.Add(cookie.ToClientCookie());
+		}
+
+		var response = await client.SendAsync(requestBuilder);
+
+		client.AddCookies(URL, cookiesList);
+		requestBuilder = new RequestBuilder()
+			.WithUrl($"{URL}/cookies")
+			.WithMethod(HttpMethod.Get)
+			.Build();
+
+		response = await client.SendAsync(requestBuilder);
 		PrintResponse(response);
 	}
 
