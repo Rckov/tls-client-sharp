@@ -9,9 +9,9 @@
 		<InvariantGlobalization>true</InvariantGlobalization>
 		<PreBuildEvent>
 			echo [bogdanfinn/tls-client] Checking update...
-			powershell -NoProfile -ExecutionPolicy Bypass -File "$(MSBuildThisFileDirectory)..\scripts\update-tls-client.ps1"
+			powershell -NoProfile -ExecutionPolicy Bypass -File "$(MSBuildThisFileDirectory)..\build\update-tls-client.ps1"
 			if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%
-			powershell -NoProfile -Command "Write-Host '[bogdanfinn/tls-client] Checking update complete. Updated to ' -NoNewline; Write-Host (Get-Content '$(MSBuildThisFileDirectory)..\scripts\tls-client-version.txt')"
+			powershell -NoProfile -Command "Write-Host '[bogdanfinn/tls-client] Checking update complete. Updated to ' -NoNewline; Write-Host (Get-Content '$(MSBuildThisFileDirectory)..\build\tls-client-version.txt')"
 		</PreBuildEvent>
 	</PropertyGroup>
 	
