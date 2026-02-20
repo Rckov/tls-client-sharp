@@ -1,31 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFrameworks>net48;net6.0;net8.0;net9.0;net10.0</TargetFrameworks>
-    <Nullable>enable</Nullable>
-    <Platforms>x64;AnyCPU</Platforms>
-    <LangVersion>Latest</LangVersion>
-    <InvariantGlobalization>true</InvariantGlobalization>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0' OR '$(TargetFramework)' == 'net9.0' OR '$(TargetFramework)' == 'net10.0'">
-    <PublishAot>true</PublishAot>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\src\Http.TLS.csproj" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-    <Reference Include="System.Net.Http" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="tls-client-windows-64-1.14.0.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-    </None>
-  </ItemGroup>
-
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<Platforms>x64;AnyCPU</Platforms>
+		<LangVersion>Latest</LangVersion>
+		<PublishAot>true</PublishAot>
+		<InvariantGlobalization>true</InvariantGlobalization>
+		<PreBuildEvent>
+			echo [bogdanfinn/tls-client] Checking update...
+			powershell -NoProfile -ExecutionPolicy Bypass -File "$(MSBuildThisFileDirectory)..\scripts\update-tls-client.ps1"
+			if %ERRORLEVEL% neq 0 exit /b %ERRORLEVEL%
+			powershell -NoProfile -Command "Write-Host '[bogdanfinn/tls-client] Checking update complete. Updated to ' -NoNewline; Write-Host (Get-Content '$(MSBuildThisFileDirectory)..\scripts\tls-client-version.txt')"
+		</PreBuildEvent>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<ProjectReference Include="..\src\Http.TLS.csproj" />
+		
+		<Content Include="$(MSBuildThisFileDirectory)..\scripts\tls-client.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<Link>tls-client.dll</Link>
+			<Visible>false</Visible>
+		</Content>
+	</ItemGroup>
 </Project>

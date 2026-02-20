@@ -12,7 +12,7 @@ public static class Program
 {
 	private static async Task Main()
 	{
-		using var context = new NativeClientContext("tls-client-windows-64-1.14.0.dll");
+		using var context = new NativeClientContext("tls-client.dll");
 #if NET8_0_OR_GREATER
 		context.RegisterContext(ExamplesJsonContext.Default);
 #endif
