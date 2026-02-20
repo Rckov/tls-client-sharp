@@ -21,8 +21,6 @@ namespace Http.TLS.Utilities;
 [JsonSerializable(typeof(PriorityParam))]
 [JsonSerializable(typeof(BrowserType))]
 [JsonSerializable(typeof(DestroySessionRequest))]
-internal partial class SerializerContext : JsonSerializerContext
-{
-}
+internal partial class SerializerContext : JsonSerializerContext;
 
 #endif

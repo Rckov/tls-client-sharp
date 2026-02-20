@@ -45,7 +45,7 @@ public class ClientCookie
 	/// Max age in seconds.
 	/// </summary>
 	[JsonPropertyName("maxAge")]
-	public long MaxAge { get; set; } = 0;
+	public int MaxAge { get; set; } = 0;
 
 	/// <summary>
 	/// HTTPS only.

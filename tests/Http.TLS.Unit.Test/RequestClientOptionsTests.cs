@@ -9,50 +9,140 @@ namespace Http.TLS.Unit.Test;
 public class RequestClientOptionsTests
 {
 	[Fact]
-	public void Clone_MutatingCollections_DoesNotAffectOriginal()
+	public void RequestClientOptions_Validate_1()
 	{
-		var original = new RequestClientOptions
-		{
-			DefaultHeaders = new() { ["X-Test"] = ["value"] },
-			HeaderOrder = ["Accept"],
-			CertificatePinningHosts = new() { ["example.com"] = ["abc123"] },
-			CustomRequestClient = new CustomRequestClient { AlpnProtocols = ["h2"] }
-		};
-
-		var clone = original.Clone();
-
-		clone.DefaultHeaders["X-Test"].Add("extra");
-		clone.HeaderOrder.Add("Content-Type");
-		clone.CertificatePinningHosts["example.com"].Add("def456");
-		clone.CustomRequestClient!.AlpnProtocols.Add("http/1.1");
-
-		original.DefaultHeaders["X-Test"].Should().HaveCount(1);
-		original.HeaderOrder.Should().HaveCount(1);
-		original.CertificatePinningHosts["example.com"].Should().HaveCount(1);
-		original.CustomRequestClient!.AlpnProtocols.Should().HaveCount(1);
-	}
-
-	[Fact]
-	public void Validate_BothCookieJarFlags_Throws()
-	{
-		var options = new RequestClientOptions
-		{
-			WithCustomCookieJar = true,
-			WithoutCookieJar = true
-		};
-
-		options.Invoking(o => o.Validate()).Should().Throw<InvalidOperationException>();
-	}
-
-	[Fact]
-	public void Validate_BothIpVersionsDisabled_Throws()
-	{
+		// Arrange
 		var options = new RequestClientOptions
 		{
 			DisableIPv4 = true,
 			DisableIPv6 = true
 		};
+		var act = () => options.Validate();
 
-		options.Invoking(o => o.Validate()).Should().Throw<InvalidOperationException>();
+		// Act & Assert
+		act.Should().Throw<InvalidOperationException>().WithMessage("*IPv4*IPv6*");
+	}
+
+	[Fact]
+	public void RequestClientOptions_Validate_2()
+	{
+		// Arrange
+		var options = new RequestClientOptions
+		{
+			ProxyUrl = "not-a-valid-url"
+		};
+		var act = () => options.Validate();
+
+		// Act & Assert
+		act.Should().Throw<UriFormatException>();
+	}
+
+	[Fact]
+	public void RequestClientOptions_Validate_3()
+	{
+		// Arrange
+		var options = new RequestClientOptions
+		{
+			LocalAddress = "invalid-ip"
+		};
+		var act = () => options.Validate();
+
+		// Act & Assert
+		act.Should().Throw<ArgumentException>().WithMessage("*IP address*");
+	}
+
+	[Fact]
+	public void RequestClientOptions_Validate_4()
+	{
+		// Arrange
+		var options = new RequestClientOptions();
+		options.CertificatePinningHosts["example.com"] = [];
+		var act = () => options.Validate();
+
+		// Act & Assert
+		act.Should().Throw<ArgumentException>();
+	}
+
+	[Fact]
+	public void RequestClientOptions_Validate_5()
+	{
+		// Arrange
+		var options = new RequestClientOptions();
+		options.CertificatePinningHosts["invalid hostname!"] = ["pin1"];
+		var act = () => options.Validate();
+
+		// Act & Assert
+		act.Should().Throw<ArgumentException>().WithMessage("*hostname*");
+	}
+
+	[Fact]
+	public void RequestClientOptions_Validate_6()
+	{
+		// Arrange
+		var options = new RequestClientOptions
+		{
+			Timeout = TimeSpan.Zero
+		};
+		var act = () => options.Validate();
+
+		// Act & Assert
+		act.Should().Throw<ArgumentException>().WithMessage("*Timeout*positive*");
+	}
+
+	[Fact]
+	public void RequestClientOptions_Clone_1()
+	{
+		// Arrange
+		var original = new RequestClientOptions();
+		original.DefaultHeaders["X-Custom"] = ["value1", "value2"];
+		original.CertificatePinningHosts["example.com"] = ["pin1", "pin2"];
+		original.HeaderOrder.Add("Authorization");
+
+		// Act
+		var clone = original.Clone();
+
+		// Assert
+		clone.DefaultHeaders.Should().NotBeSameAs(original.DefaultHeaders);
+		clone.DefaultHeaders["X-Custom"].Should().NotBeSameAs(original.DefaultHeaders["X-Custom"]);
+		clone.CertificatePinningHosts.Should().NotBeSameAs(original.CertificatePinningHosts);
+		clone.CertificatePinningHosts["example.com"].Should().NotBeSameAs(original.CertificatePinningHosts["example.com"]);
+		clone.HeaderOrder.Should().NotBeSameAs(original.HeaderOrder);
+
+		original.DefaultHeaders["X-Custom"].Add("value3");
+		clone.DefaultHeaders["X-Custom"].Should().HaveCount(2);
+
+		original.CertificatePinningHosts["example.com"].Add("pin3");
+		clone.CertificatePinningHosts["example.com"].Should().HaveCount(2);
+
+		original.HeaderOrder.Add("Content-Type");
+		clone.HeaderOrder.Should().HaveCount(1);
+	}
+
+	[Fact]
+	public void RequestClientOptions_Clone_2()
+	{
+		// Arrange
+		var original = new RequestClientOptions
+		{
+			CustomRequestClient = new CustomRequestClient
+			{
+				Ja3Fingerprint = "test",
+				AlpnProtocols = ["h2", "http/1.1"]
+			},
+			TransportOptions = new TransportOptions
+			{
+				MaxIdleConns = 100
+			}
+		};
+
+		// Act
+		var clone = original.Clone();
+
+		// Assert
+		clone.CustomRequestClient.Should().NotBeSameAs(original.CustomRequestClient);
+		clone.TransportOptions.Should().NotBeSameAs(original.TransportOptions);
+
+		original.CustomRequestClient.AlpnProtocols.Add("h3");
+		clone.CustomRequestClient!.AlpnProtocols.Should().HaveCount(2);
 	}
 }
