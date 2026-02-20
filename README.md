@@ -1,4 +1,4 @@
-[![Target Frameworks](https://img.shields.io/badge/Target%20Frameworks-netstandard2.0%20%7C%20net5.0%20%7C%20net6.0%20%7C%20net8.0%20%7C%20net9.0%20%7C%20net10.0-512BD4)]()
+[![.NET](https://img.shields.io/badge/.NET-5%E2%80%936%20%7C%208%E2%80%9310%20%7C%20netstandard2.0-512BD4)]()
 [![Build and Release](https://github.com/Rckov/tls-client-sharp/actions/workflows/release.yml/badge.svg)](https://github.com/Rckov/tls-client-sharp/actions/workflows/release.yml)
 [![NuGet](https://img.shields.io/nuget/v/Http.TLS.svg?label=NuGet)](https://www.nuget.org/packages/Http.TLS)
 [![Build AOT](https://img.shields.io/badge/Build_AOT-enabled-brightgreen)](https://learn.microsoft.com/dotnet/core/deploying/native-aot/)
