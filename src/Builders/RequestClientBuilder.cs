@@ -84,7 +84,7 @@ public class RequestClientBuilder
 	/// </summary>
 	public RequestClientBuilder WithProxy(string url, bool rotating = false)
 	{
-		Options.ProxyUrl = url.ThrowIfNullOrEmpty();
+		Options.ProxyUrl = url.ThrowIfNotUri();
 		Options.IsRotatingProxy = rotating;
 		return this;
 	}

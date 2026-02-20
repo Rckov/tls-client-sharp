@@ -168,7 +168,7 @@ public class RequestBuilder
 	/// </summary>
 	public RequestBuilder WithProxy(string url, bool rotating = false)
 	{
-		_request.ProxyUrl = url.ThrowIfNullOrEmpty();
+		_request.ProxyUrl = url.ThrowIfNotUri();
 		_request.IsRotatingProxy = rotating;
 		return this;
 	}

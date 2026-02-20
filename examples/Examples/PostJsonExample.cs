@@ -3,6 +3,7 @@ using Http.TLS.Examples.Abstractions;
 using Http.TLS.Extensions;
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
@@ -14,8 +15,21 @@ public sealed class PostJsonExample(IRequestClientFactory factory) : IExample
 	{
 		using var client = factory.CreateClient();
 
-		var payload = new PostPayload("[name]", "[email]", 30);
+		object payload = null!;
 
+#if NET8_0_OR_GREATER
+		if (!RuntimeFeature.IsDynamicCodeSupported)
+		{
+			payload = new PostPayload("[name]", "[email]", 30);
+		}
+#else
+		payload = new
+		{
+			email = "[email]",
+			name = "[name]",
+			age = 30
+		};
+#endif
 		var response = await client.PostJsonAsync("https://httpbin.org/post", payload);
 		PrintResponse(response);
 	}
@@ -39,6 +53,4 @@ public sealed class PostJsonExample(IRequestClientFactory factory) : IExample
 }
 
 [JsonSerializable(typeof(PostJsonExample.PostPayload))]
-public partial class ExamplesJsonContext : JsonSerializerContext
-{
-}
+public partial class ExamplesJsonContext : JsonSerializerContext;

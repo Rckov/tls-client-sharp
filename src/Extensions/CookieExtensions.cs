@@ -34,7 +34,7 @@ public static class CookieExtensions
 		/// </summary>
 		public ClientCookie WithMaxAge(TimeSpan maxAge)
 		{
-			cookie.MaxAge = (long)maxAge.TotalSeconds;
+			cookie.MaxAge = (int)maxAge.TotalSeconds;
 			return cookie;
 		}
 	}
