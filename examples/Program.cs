@@ -12,6 +12,7 @@ public static class Program
 	private static async Task Main()
 	{
 		using var context = new NativeClientContext("tls-client-windows-64-1.14.0.dll");
+		context.RegisterContext(ExamplesJsonContext.Default);
 
 		var factory = new RequestClientFactory();
 		factory.Register("custom-tls", o => o.CustomRequestClient = CustomRequestClientExample.BuildProfile());
@@ -30,5 +31,7 @@ public static class Program
 			Console.WriteLine($"{i + 1}. {examples[i].GetType().Name}");
 			await examples[i].RunAsync();
 		}
+
+		Console.ReadLine();
 	}
 }

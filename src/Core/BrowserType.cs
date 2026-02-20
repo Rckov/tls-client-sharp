@@ -1,237 +1,93 @@
-using System.ComponentModel;
+using Http.TLS.Core.Converters;
+
+using System.Text.Json.Serialization;
 
 namespace Http.TLS.Core;
 
 /// <summary>
-/// TLS client fingerprints for browser impersonation.
+/// TLS client fingerprint for browser impersonation.
 /// </summary>
-public enum BrowserType
+[JsonConverter(typeof(BrowserTypeConverter))]
+public sealed class BrowserType(string value)
 {
-	[Description("chrome_103")]
-	Chrome103,
-
-	[Description("chrome_104")]
-	Chrome104,
-
-	[Description("chrome_105")]
-	Chrome105,
-
-	[Description("chrome_106")]
-	Chrome106,
-
-	[Description("chrome_107")]
-	Chrome107,
-
-	[Description("chrome_108")]
-	Chrome108,
-
-	[Description("chrome_109")]
-	Chrome109,
-
-	[Description("chrome_110")]
-	Chrome110,
-
-	[Description("chrome_111")]
-	Chrome111,
-
-	[Description("chrome_112")]
-	Chrome112,
-
-	[Description("chrome_116_PSK")]
-	Chrome116Psk,
-
-	[Description("chrome_116_PSK_PQ")]
-	Chrome116PskPq,
-
-	[Description("chrome_117")]
-	Chrome117,
-
-	[Description("chrome_120")]
-	Chrome120,
-
-	[Description("chrome_124")]
-	Chrome124,
-
-	[Description("chrome_130_PSK")]
-	Chrome130Psk,
-
-	[Description("chrome_131")]
-	Chrome131,
-
-	[Description("chrome_131_PSK")]
-	Chrome131Psk,
-
-	[Description("chrome_133")]
-	Chrome133,
-
-	[Description("chrome_133_PSK")]
-	Chrome133Psk,
-
-	[Description("chrome_144")]
-	Chrome144,
-
-	[Description("chrome_144_PSK")]
-	Chrome144Psk,
-
-	[Description("chrome_146")]
-	Chrome146,
-
-	[Description("chrome_146_PSK")]
-	Chrome146Psk,
-
-	[Description("safari_15_6_1")]
-	Safari1561,
-
-	[Description("safari_16_0")]
-	Safari160,
-
-	[Description("safari_ipad_15_6")]
-	SafariIpad156,
-
-	[Description("safari_ios_15_5")]
-	SafariIos155,
-
-	[Description("safari_ios_15_6")]
-	SafariIos156,
-
-	[Description("safari_ios_16_0")]
-	SafariIos160,
-
-	[Description("safari_ios_17_0")]
-	SafariIos170,
-
-	[Description("safari_ios_18_0")]
-	SafariIos180,
-
-	[Description("safari_ios_18_5")]
-	SafariIos185,
-
-	[Description("safari_ios_26_0")]
-	SafariIos260,
-
-	[Description("firefox_102")]
-	Firefox102,
-
-	[Description("firefox_104")]
-	Firefox104,
-
-	[Description("firefox_105")]
-	Firefox105,
-
-	[Description("firefox_106")]
-	Firefox106,
-
-	[Description("firefox_108")]
-	Firefox108,
-
-	[Description("firefox_110")]
-	Firefox110,
-
-	[Description("firefox_117")]
-	Firefox117,
-
-	[Description("firefox_120")]
-	Firefox120,
-
-	[Description("firefox_123")]
-	Firefox123,
-
-	[Description("firefox_132")]
-	Firefox132,
-
-	[Description("firefox_133")]
-	Firefox133,
-
-	[Description("firefox_135")]
-	Firefox135,
-
-	[Description("firefox_146_PSK")]
-	Firefox146Psk,
-
-	[Description("firefox_147")]
-	Firefox147,
-
-	[Description("firefox_147_PSK")]
-	Firefox147Psk,
-
-	[Description("opera_89")]
-	Opera89,
-
-	[Description("opera_90")]
-	Opera90,
-
-	[Description("opera_91")]
-	Opera91,
-
-	[Description("mms_ios")]
-	MmsIos,
-
-	[Description("mms_ios_1")]
-	MmsIos1,
-
-	[Description("mms_ios_2")]
-	MmsIos2,
-
-	[Description("mms_ios_3")]
-	MmsIos3,
-
-	[Description("mesh_ios")]
-	MeshIos,
-
-	[Description("mesh_ios_1")]
-	MeshIos1,
-
-	[Description("mesh_ios_2")]
-	MeshIos2,
-
-	[Description("mesh_android")]
-	MeshAndroid,
-
-	[Description("mesh_android_1")]
-	MeshAndroid1,
-
-	[Description("mesh_android_2")]
-	MeshAndroid2,
-
-	[Description("confirmed_ios")]
-	ConfirmedIos,
-
-	[Description("confirmed_android")]
-	ConfirmedAndroid,
-
-	[Description("okhttp4_android_7")]
-	Okhttp4Android7,
-
-	[Description("okhttp4_android_8")]
-	Okhttp4Android8,
-
-	[Description("okhttp4_android_9")]
-	Okhttp4Android9,
-
-	[Description("okhttp4_android_10")]
-	Okhttp4Android10,
-
-	[Description("okhttp4_android_11")]
-	Okhttp4Android11,
-
-	[Description("okhttp4_android_12")]
-	Okhttp4Android12,
-
-	[Description("okhttp4_android_13")]
-	Okhttp4Android13,
-
-	[Description("zalando_android_mobile")]
-	ZalandoAndroidMobile,
-
-	[Description("zalando_ios_mobile")]
-	ZalandoIosMobile,
-
-	[Description("nike_ios_mobile")]
-	NikeIosMobile,
-
-	[Description("nike_android_mobile")]
-	NikeAndroidMobile,
-
-	[Description("cloudscraper")]
-	Cloudscraper
+	public static readonly BrowserType Chrome103 = new("chrome_103");
+	public static readonly BrowserType Chrome104 = new("chrome_104");
+	public static readonly BrowserType Chrome105 = new("chrome_105");
+	public static readonly BrowserType Chrome106 = new("chrome_106");
+	public static readonly BrowserType Chrome107 = new("chrome_107");
+	public static readonly BrowserType Chrome108 = new("chrome_108");
+	public static readonly BrowserType Chrome109 = new("chrome_109");
+	public static readonly BrowserType Chrome110 = new("chrome_110");
+	public static readonly BrowserType Chrome111 = new("chrome_111");
+	public static readonly BrowserType Chrome112 = new("chrome_112");
+	public static readonly BrowserType Chrome116Psk = new("chrome_116_PSK");
+	public static readonly BrowserType Chrome116PskPq = new("chrome_116_PSK_PQ");
+	public static readonly BrowserType Chrome117 = new("chrome_117");
+	public static readonly BrowserType Chrome120 = new("chrome_120");
+	public static readonly BrowserType Chrome124 = new("chrome_124");
+	public static readonly BrowserType Chrome130Psk = new("chrome_130_PSK");
+	public static readonly BrowserType Chrome131 = new("chrome_131");
+	public static readonly BrowserType Chrome131Psk = new("chrome_131_PSK");
+	public static readonly BrowserType Chrome133 = new("chrome_133");
+	public static readonly BrowserType Chrome133Psk = new("chrome_133_PSK");
+	public static readonly BrowserType Chrome144 = new("chrome_144");
+	public static readonly BrowserType Chrome144Psk = new("chrome_144_PSK");
+	public static readonly BrowserType Chrome146 = new("chrome_146");
+	public static readonly BrowserType Chrome146Psk = new("chrome_146_PSK");
+	public static readonly BrowserType Safari1561 = new("safari_15_6_1");
+	public static readonly BrowserType Safari160 = new("safari_16_0");
+	public static readonly BrowserType SafariIpad156 = new("safari_ipad_15_6");
+	public static readonly BrowserType SafariIos155 = new("safari_ios_15_5");
+	public static readonly BrowserType SafariIos156 = new("safari_ios_15_6");
+	public static readonly BrowserType SafariIos160 = new("safari_ios_16_0");
+	public static readonly BrowserType SafariIos170 = new("safari_ios_17_0");
+	public static readonly BrowserType SafariIos180 = new("safari_ios_18_0");
+	public static readonly BrowserType SafariIos185 = new("safari_ios_18_5");
+	public static readonly BrowserType SafariIos260 = new("safari_ios_26_0");
+	public static readonly BrowserType Firefox102 = new("firefox_102");
+	public static readonly BrowserType Firefox104 = new("firefox_104");
+	public static readonly BrowserType Firefox105 = new("firefox_105");
+	public static readonly BrowserType Firefox106 = new("firefox_106");
+	public static readonly BrowserType Firefox108 = new("firefox_108");
+	public static readonly BrowserType Firefox110 = new("firefox_110");
+	public static readonly BrowserType Firefox117 = new("firefox_117");
+	public static readonly BrowserType Firefox120 = new("firefox_120");
+	public static readonly BrowserType Firefox123 = new("firefox_123");
+	public static readonly BrowserType Firefox132 = new("firefox_132");
+	public static readonly BrowserType Firefox133 = new("firefox_133");
+	public static readonly BrowserType Firefox135 = new("firefox_135");
+	public static readonly BrowserType Firefox146Psk = new("firefox_146_PSK");
+	public static readonly BrowserType Firefox147 = new("firefox_147");
+	public static readonly BrowserType Firefox147Psk = new("firefox_147_PSK");
+	public static readonly BrowserType Opera89 = new("opera_89");
+	public static readonly BrowserType Opera90 = new("opera_90");
+	public static readonly BrowserType Opera91 = new("opera_91");
+	public static readonly BrowserType MmsIos = new("mms_ios");
+	public static readonly BrowserType MmsIos1 = new("mms_ios_1");
+	public static readonly BrowserType MmsIos2 = new("mms_ios_2");
+	public static readonly BrowserType MmsIos3 = new("mms_ios_3");
+	public static readonly BrowserType MeshIos = new("mesh_ios");
+	public static readonly BrowserType MeshIos1 = new("mesh_ios_1");
+	public static readonly BrowserType MeshIos2 = new("mesh_ios_2");
+	public static readonly BrowserType MeshAndroid = new("mesh_android");
+	public static readonly BrowserType MeshAndroid1 = new("mesh_android_1");
+	public static readonly BrowserType MeshAndroid2 = new("mesh_android_2");
+	public static readonly BrowserType ConfirmedIos = new("confirmed_ios");
+	public static readonly BrowserType ConfirmedAndroid = new("confirmed_android");
+	public static readonly BrowserType Okhttp4Android7 = new("okhttp4_android_7");
+	public static readonly BrowserType Okhttp4Android8 = new("okhttp4_android_8");
+	public static readonly BrowserType Okhttp4Android9 = new("okhttp4_android_9");
+	public static readonly BrowserType Okhttp4Android10 = new("okhttp4_android_10");
+	public static readonly BrowserType Okhttp4Android11 = new("okhttp4_android_11");
+	public static readonly BrowserType Okhttp4Android12 = new("okhttp4_android_12");
+	public static readonly BrowserType Okhttp4Android13 = new("okhttp4_android_13");
+	public static readonly BrowserType ZalandoAndroidMobile = new("zalando_android_mobile");
+	public static readonly BrowserType ZalandoIosMobile = new("zalando_ios_mobile");
+	public static readonly BrowserType NikeIosMobile = new("nike_ios_mobile");
+	public static readonly BrowserType NikeAndroidMobile = new("nike_android_mobile");
+	public static readonly BrowserType Cloudscraper = new("cloudscraper");
+
+	public string Value { get; } = value;
+
+	public override string ToString() => Value;
 }

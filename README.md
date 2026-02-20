@@ -1,6 +1,7 @@
 [![Target Frameworks](https://img.shields.io/badge/Target%20Frameworks-netstandard2.0%20%7C%20net5.0%20%7C%20net6.0%20%7C%20net8.0%20%7C%20net9.0%20%7C%20net10.0-512BD4)]()
 [![Build and Release](https://github.com/Rckov/tls-client-sharp/actions/workflows/release.yml/badge.svg)](https://github.com/Rckov/tls-client-sharp/actions/workflows/release.yml)
 [![NuGet](https://img.shields.io/nuget/v/Http.TLS.svg?label=NuGet)](https://www.nuget.org/packages/Http.TLS)
+[![Build AOT](https://img.shields.io/badge/Build_AOT-enabled-brightgreen)](https://learn.microsoft.com/dotnet/core/deploying/native-aot/)
 
 # Http.TLS
 
@@ -21,6 +22,9 @@ Download the appropriate native library for your platform from the [bogdanfinn/t
 ```csharp
 // Initialize once at application startup, dispose on shutdown
 using var context = new NativeClientContext("path/to/native-library");
+
+// For AOT builds, register your JsonSerializerContext for custom types
+// context.RegisterContext(AppJsonSerializerContext.Default);
 ```
 
 ## Quick Start

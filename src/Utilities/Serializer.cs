@@ -1,4 +1,5 @@
 using Http.TLS.Core.Converters;
+using Http.TLS.Native;
 
 using System.Text;
 using System.Text.Json;
@@ -8,16 +9,26 @@ namespace Http.TLS.Utilities;
 
 public static class Serializer
 {
-	private static readonly JsonSerializerOptions Options = new()
+	private static JsonSerializerOptions? _options;
+	private static JsonSerializerOptions Options => _options ??= CreateOptions();
+
+	private static JsonSerializerOptions CreateOptions()
 	{
-		WriteIndented = false,
-		PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-		DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-		Converters =
+#if NET8_0_OR_GREATER
+		var options = new JsonSerializerOptions(SerializerContext.Default.Options);
+		foreach (var context in NativeClientContext.RegisteredContexts)
 		{
-			new BrowserTypeConverter()
+			options.TypeInfoResolverChain.Add(context);
 		}
-	};
+#else
+		var options = new JsonSerializerOptions();
+#endif
+		options.WriteIndented = false;
+		options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+		options.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+		options.Converters.Add(new BrowserTypeConverter());
+		return options;
+	}
 
 	public static string Serialize<T>(T? data) where T : class
 	{

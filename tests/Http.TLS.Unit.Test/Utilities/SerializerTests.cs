@@ -10,10 +10,12 @@ namespace Http.TLS.Unit.Test.Utilities;
 
 public class SerializerTests
 {
+	internal sealed record BrowserPayload(BrowserType Browser);
+
 	[Fact]
 	public void Serialize_BrowserType_UsesDescriptionNotEnumName()
 	{
-		var json = Serializer.Serialize(new { browser = BrowserType.Chrome133 });
+		var json = Serializer.Serialize(new BrowserPayload(BrowserType.Chrome133));
 
 		json.Should().Contain("chrome_133").And.NotContain("Chrome133");
 	}

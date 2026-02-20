@@ -3,22 +3,20 @@ using Http.TLS.Examples.Abstractions;
 using Http.TLS.Extensions;
 
 using System;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Http.TLS.Examples.Examples;
 
 public sealed class PostJsonExample(IRequestClientFactory factory) : IExample
 {
+	public sealed record PostPayload(string Name, string Email, int Age);
+
 	public async Task RunAsync()
 	{
 		using var client = factory.CreateClient();
 
-		var payload = new
-		{
-			name = "[name]",
-			email = "[email]",
-			age = 30
-		};
+		var payload = new PostPayload("[name]", "[email]", 30);
 
 		var response = await client.PostJsonAsync("https://httpbin.org/post", payload);
 		PrintResponse(response);
@@ -33,4 +31,9 @@ public sealed class PostJsonExample(IRequestClientFactory factory) : IExample
 
 		Console.WriteLine($"POST Response: {response.Body}");
 	}
+}
+
+[JsonSerializable(typeof(PostJsonExample.PostPayload))]
+public partial class ExamplesJsonContext : JsonSerializerContext
+{
 }

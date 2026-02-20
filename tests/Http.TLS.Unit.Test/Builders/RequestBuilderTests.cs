@@ -8,6 +8,8 @@ namespace Http.TLS.Unit.Test.Builders;
 
 public class RequestBuilderTests
 {
+	internal sealed record TestBody(string Name, int Value);
+
 	[Fact]
 	public void WithUrl_InvalidUri_Throws()
 	{
@@ -39,7 +41,7 @@ public class RequestBuilderTests
 	{
 		var request = new RequestBuilder()
 			.WithUrl("https://example.com")
-			.WithBody(new { name = "test", value = 42 })
+			.WithBody(new TestBody("test", 42))
 			.Build();
 
 		request.RequestBody.Should().Be("{\"name\":\"test\",\"value\":42}");
