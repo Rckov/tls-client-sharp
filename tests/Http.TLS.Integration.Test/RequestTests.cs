@@ -12,12 +12,19 @@ public sealed class NativeLibraryFixture : IDisposable
 {
 	private readonly NativeClientContext _context = new("tls-client-windows-64-1.14.0.dll");
 
+	public NativeLibraryFixture()
+	{
+		_context.RegisterContext(IntegrationTestJsonContext.Default);
+	}
+
 	public void Dispose() => _context.Dispose();
 }
 
 [Trait("Category", "Integration")]
 public class RequestTests(NativeLibraryFixture nativeLibraryFixture) : IClassFixture<NativeLibraryFixture>
 {
+	internal sealed record PostBody(string Key);
+
 	private static IRequestClient CreateClient() =>
 		new RequestClientBuilder()
 			.WithBrowserType(BrowserType.Chrome133)
@@ -46,7 +53,7 @@ public class RequestTests(NativeLibraryFixture nativeLibraryFixture) : IClassFix
 		var request = new RequestBuilder()
 			.WithUrl("https://httpbin.org/post")
 			.WithMethod(HttpMethod.Post)
-			.WithBody(new { key = "sentinel_value" })
+			.WithBody(new PostBody("sentinel_value"))
 			.Build();
 
 		var response = await client.SendAsync(request, TestContext.Current.CancellationToken);

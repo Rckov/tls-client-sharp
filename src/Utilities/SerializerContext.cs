@@ -21,10 +21,6 @@ namespace Http.TLS.Utilities;
 [JsonSerializable(typeof(PriorityParam))]
 [JsonSerializable(typeof(BrowserType))]
 [JsonSerializable(typeof(DestroySessionRequest))]
-[JsonSourceGenerationOptions(
-	WriteIndented = false,
-	PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
-	DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull)]
 internal partial class SerializerContext : JsonSerializerContext
 {
 }
