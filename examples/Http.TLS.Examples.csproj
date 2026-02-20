@@ -18,7 +18,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\src\Http.TLS.csproj" />
 		
-		<Content Include="$(MSBuildThisFileDirectory)..\scripts\tls-client.dll">
+		<Content Include="$(MSBuildThisFileDirectory)..\build\tls-client.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<Link>tls-client.dll</Link>
 			<Visible>false</Visible>
