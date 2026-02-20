@@ -20,24 +20,26 @@ public static class Program
 		var factory = new RequestClientFactory();
 		factory.Register("custom-tls", o => o.CustomRequestClient = CustomRequestClientExample.BuildProfile());
 
-		//IExample[] examples =
-		//[
-		//	new BasicExample(factory),
-		//	new CookieExample(factory),
-		//	new CustomHeadersExample(factory),
-		//	new PostJsonExample(factory),
-		//	new CustomRequestClientExample(factory),
-		//];
+		IExample[] examples =
+		[
+			new BasicExample(factory),
+			new CookieExample(factory),
+			new CustomHeadersExample(factory),
+			new PostJsonExample(factory),
+			new CustomRequestClientExample(factory),
+		];
 
 		IExample[] Issues =
 		[
 			new CookieIssueExample(factory),
 		];
 
-		for (var i = 0; i < Issues.Length; i++)
+		IExample[] array = examples;
+
+		for (var i = 0; i < array.Length; i++)
 		{
-			Console.WriteLine($"{i + 1}. {Issues[i].GetType().Name}");
-			await Issues[i].RunAsync();
+			Console.WriteLine($"{i + 1}. {array[i].GetType().Name}");
+			await array[i].RunAsync();
 		}
 
 		Console.ReadLine();
