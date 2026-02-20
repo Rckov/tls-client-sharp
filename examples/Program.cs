@@ -12,7 +12,9 @@ public static class Program
 	private static async Task Main()
 	{
 		using var context = new NativeClientContext("tls-client-windows-64-1.14.0.dll");
+#if NET8_0_OR_GREATER
 		context.RegisterContext(ExamplesJsonContext.Default);
+#endif
 
 		var factory = new RequestClientFactory();
 		factory.Register("custom-tls", o => o.CustomRequestClient = CustomRequestClientExample.BuildProfile());

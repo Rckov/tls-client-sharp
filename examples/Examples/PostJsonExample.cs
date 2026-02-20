@@ -10,8 +10,6 @@ namespace Http.TLS.Examples.Examples;
 
 public sealed class PostJsonExample(IRequestClientFactory factory) : IExample
 {
-	public sealed record PostPayload(string Name, string Email, int Age);
-
 	public async Task RunAsync()
 	{
 		using var client = factory.CreateClient();
@@ -30,6 +28,13 @@ public sealed class PostJsonExample(IRequestClientFactory factory) : IExample
 		}
 
 		Console.WriteLine($"POST Response: {response.Body}");
+	}
+
+	public sealed class PostPayload(string name, string email, int age)
+	{
+		public string Name { get; } = name;
+		public string Email { get; } = email;
+		public int Age { get; } = age;
 	}
 }
 

@@ -12,6 +12,8 @@ namespace Http.TLS.Examples.Examples;
 
 public sealed class CustomRequestClientExample(IRequestClientFactory factory) : IExample
 {
+	private static readonly Random _random = new();
+
 	private static readonly int[] GreaseValues =
 	[
 		0x0A0A, 0x1A1A, 0x2A2A, 0x3A3A, 0x4A4A, 0x5A5A, 0x6A6A, 0x7A7A,
@@ -43,7 +45,7 @@ public sealed class CustomRequestClientExample(IRequestClientFactory factory) : 
 
 	public static CustomRequestClient BuildProfile()
 	{
-		var grease = GreaseValues[Random.Shared.Next(GreaseValues.Length)];
+		var grease = GreaseValues[_random.Next(GreaseValues.Length)];
 		var ja3 = BuildJa3Fingerprint(grease);
 
 		return BuildCustomProfile(ja3);
