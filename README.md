@@ -3,6 +3,8 @@
 [![NuGet](https://img.shields.io/nuget/v/Http.TLS.svg?label=NuGet)](https://www.nuget.org/packages/Http.TLS)
 [![Build AOT](https://img.shields.io/badge/Build_AOT-enabled-brightgreen)](https://learn.microsoft.com/dotnet/core/deploying/native-aot/)
 
+<img src="images/icon.png" width="45" height="45" align="left">
+
 # Http.TLS
 
 .NET library for HTTP/2 HTTP/3 requests with TLS fingerprinting support. Based on [bogdanfinn/tls-client](https://github.com/bogdanfinn/tls-client/), it allows you to mimic various browser fingerprints to bypass bot protection.
